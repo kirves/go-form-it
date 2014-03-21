@@ -1,0 +1,5 @@
+language: go
+script: "go build"
+go:
+- 1.2
+- tip
