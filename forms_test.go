@@ -69,3 +69,13 @@ func TestFormRender(t *testing.T) {
 	form.AddField(btn)
 	t.Log("Rendered form:", form.Render())
 }
+
+func TestFormFromModel(t *testing.T) {
+	type Model struct {
+		User     string
+		Password string `form_widget:"password"`
+	}
+
+	form := BaseFormFromModel(Model{}, POST, "")
+	t.Log("Rendered form:", form.Render())
+}

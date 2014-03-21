@@ -1,9 +1,10 @@
 package forms
 
 import (
-	"bytes"
 	"github.com/kirves/revel-forms/fields"
 	"html/template"
+	"reflect"
+	"strings"
 )
 
 const (
@@ -22,29 +23,6 @@ type Form struct {
 	css      map[string]string
 	method   string
 	action   string
-}
-
-func (f *Form) Render() template.HTML {
-	var s string
-	buf := bytes.NewBufferString(s)
-	// for _, v := range f.fields {
-	// 	buf.WriteString(v.Render())
-	// 	buf.WriteRune('\n')
-	// }
-	data := map[string]interface{}{
-		"fields":  f.fields,
-		"classes": f.class,
-		"id":      f.id,
-		"params":  f.params,
-		"css":     f.css,
-		"method":  f.method,
-		"action":  f.action,
-	}
-	err := f.template.Execute(buf, data)
-	if err != nil {
-		panic(err)
-	}
-	return template.HTML(buf.String())
 }
 
 func BaseForm(method, action string) *Form {
@@ -85,63 +63,61 @@ func BootstrapForm(method, action string) *Form {
 	}
 }
 
-func (f *Form) AddField(field fields.FieldInterface) fields.FieldInterface {
-	field.SetStyle(f.style)
-	f.fields = append(f.fields, field)
-	f.fieldMap[field.Name()] = len(f.fields) - 1
-	return field
-}
-
-func (f *Form) RemoveField(name string) {
-	ind, ok := f.fieldMap[name]
-	if !ok {
-		return
+func BaseFormFromModel(m interface{}, method, action string) *Form {
+	form := BaseForm(method, action)
+	for _, v := range unWindStructure(m, "") {
+		form.AddField(v)
 	}
-	delete(f.fieldMap, name)
-	f.fields = append(f.fields[:ind], f.fields[ind+1:]...)
+	form.AddField(fields.SubmitButton("submit", "Submit"))
+	return form
 }
 
-func (f *Form) AddClass(class string) *Form {
-	f.class = append(f.class, class)
-	return f
-}
-
-func (f *Form) RemoveClass(class string) *Form {
-	ind := -1
-	for i, v := range f.class {
-		if v == class {
-			ind = i
-			break
+func unWindStructure(m interface{}, baseName string) []fields.FieldInterface {
+	t := reflect.TypeOf(m)
+	fieldList := make([]fields.FieldInterface, 0)
+	for i := 0; i < t.NumField(); i++ {
+		tag := t.Field(i).Tag.Get("form_skip")
+		if tag == "" {
+			tag = t.Field(i).Tag.Get("form_widget")
+			var f fields.FieldInterface
+			var fName string
+			if baseName == "" {
+				fName = t.Field(i).Name
+			} else {
+				fName = strings.Join([]string{baseName, t.Field(i).Name}, ".")
+			}
+			switch tag {
+			case "text":
+				f = fields.TextField(fName)
+			case "textarea":
+				f = fields.TextAreaField(fName, 30, 50)
+			case "password":
+				f = fields.PasswordField(fName)
+			case "date":
+			case "datetime":
+			case "time":
+			case "number":
+			case "range":
+			default:
+				switch t.Field(i).Type.String() {
+				case "string":
+					f = fields.TextField(fName)
+				case "time.Time":
+					f = fields.TextField(fName) // FIX
+				case "int":
+					f = fields.TextField(fName) // FIX
+				case "struct":
+					fieldList = append(fieldList, unWindStructure(reflect.New(t.Field(i).Type).Elem().Interface(), fName)...)
+					f = nil
+				default:
+					f = fields.TextField(fName)
+				}
+			}
+			if f != nil {
+				f.SetLabel(strings.Title(t.Field(i).Name))
+				fieldList = append(fieldList, f)
+			}
 		}
 	}
-
-	if ind != -1 {
-		f.class = append(f.class[:ind], f.class[ind+1:]...)
-	}
-	return f
-}
-
-func (f *Form) SetId(id string) *Form {
-	f.id = id
-	return f
-}
-
-func (f *Form) SetParam(key, value string) *Form {
-	f.params[key] = value
-	return f
-}
-
-func (f *Form) DeleteParam(key string) *Form {
-	delete(f.params, key)
-	return f
-}
-
-func (f *Form) AddCss(key, value string) *Form {
-	f.css[key] = value
-	return f
-}
-
-func (f *Form) RemoveCss(key string) *Form {
-	delete(f.css, key)
-	return f
+	return fieldList
 }
