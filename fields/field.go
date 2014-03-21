@@ -30,6 +30,7 @@ const (
 	URL            = "url"
 	WEEK           = "week"
 	TEXTAREA       = "textarea" //
+	SELECT         = "select"
 )
 
 const (
@@ -76,7 +77,7 @@ func FieldWithType(name, t string) Field {
 		map[string]string{},
 		map[string]string{},
 		"",
-		name,
+		"",
 		map[string]string{},
 	}
 }

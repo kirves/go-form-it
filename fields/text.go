@@ -16,6 +16,10 @@ type TextAreaFieldType struct {
 	Field
 }
 
+type HiddenFieldType struct {
+	Field
+}
+
 func TextField(name string) *TextFieldType {
 	return &TextFieldType{
 		FieldWithType(name, TEXT),
@@ -47,4 +51,14 @@ func TextAreaField(name string, rows, cols int) *TextAreaFieldType {
 
 func (t *TextAreaFieldType) SetStyle(style string) {
 	t.widget = widgets.TextAreaInput(style)
+}
+
+func HiddenField(name string) *HiddenFieldType {
+	return &HiddenFieldType{
+		FieldWithType(name, HIDDEN),
+	}
+}
+
+func (t *HiddenFieldType) SetStyle(style string) {
+	t.widget = widgets.GenericWidget(style)
 }

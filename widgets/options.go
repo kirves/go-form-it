@@ -12,3 +12,11 @@ func RadioButton(style string) *Widget {
 	}
 	return &Widget{templ}
 }
+
+func SelectMenu(style string) *Widget {
+	templ, err := template.ParseFiles(fmt.Sprintf("templates/%s/select.html", style))
+	if err != nil {
+		panic(err)
+	}
+	return &Widget{templ}
+}

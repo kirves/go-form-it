@@ -47,6 +47,21 @@ func TestRadioButtonRender(t *testing.T) {
 	t.Log("Rendered radio:", field.Render())
 }
 
+func TestSelectRender(t *testing.T) {
+	field := fields.SelectField("select", map[string]string{
+		"choice1": "value1",
+		"choice2": "value2",
+	})
+	field.SetStyle(fields.BASE)
+	t.Log("Rendered select:", field.Render())
+}
+
+func TestHiddenRender(t *testing.T) {
+	field := fields.HiddenField("hidden")
+	field.SetStyle(fields.BASE)
+	t.Log("Rendered hidden:", field.Render())
+}
+
 func TestFormRender(t *testing.T) {
 	form := BaseForm(POST, "")
 	form.AddField(txt)
