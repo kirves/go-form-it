@@ -29,7 +29,7 @@ const (
 	TIME           = "time"
 	URL            = "url"
 	WEEK           = "week"
-	TEXTAREA       = "textarea"
+	TEXTAREA       = "textarea" //
 )
 
 const (
@@ -46,6 +46,8 @@ type Field struct {
 	params    map[string]string
 	css       map[string]string
 	text      string
+	label     string
+	choices   map[string]string
 }
 
 type FieldInterface interface {
@@ -59,6 +61,9 @@ type FieldInterface interface {
 	AddCss(key, value string)
 	RemoveCss(key string)
 	SetStyle(style string)
+	SetText(text string)
+	SetLabel(label string)
+	SetChoices(choices map[string]string)
 }
 
 func FieldWithType(name, t string) Field {
@@ -71,6 +76,8 @@ func FieldWithType(name, t string) Field {
 		map[string]string{},
 		map[string]string{},
 		"",
+		name,
+		map[string]string{},
 	}
 }
 
@@ -92,6 +99,8 @@ func (f *Field) Render() template.HTML {
 			"css":     f.css,
 			"text":    f.text,
 			"type":    f.fieldType,
+			"label":   f.label,
+			"choices": f.choices,
 		}
 		return template.HTML(f.widget.Render(data))
 	}
@@ -122,6 +131,14 @@ func (f *Field) SetId(id string) {
 
 func (f *Field) SetText(text string) {
 	f.text = text
+}
+
+func (f *Field) SetLabel(label string) {
+	f.label = label
+}
+
+func (f *Field) SetChoices(choices map[string]string) {
+	f.choices = choices
 }
 
 func (f *Field) SetParam(key, value string) {

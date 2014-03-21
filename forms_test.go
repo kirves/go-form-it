@@ -38,6 +38,15 @@ func TestButtonRender(t *testing.T) {
 	btn = field
 }
 
+func TestRadioButtonRender(t *testing.T) {
+	field := fields.RadioField("radio", map[string]string{
+		"choice1": "value1",
+		"choice2": "value2",
+	})
+	field.SetStyle(fields.BASE)
+	t.Log("Rendered radio:", field.Render())
+}
+
 func TestFormRender(t *testing.T) {
 	form := BaseForm(POST, "")
 	form.AddField(txt)
