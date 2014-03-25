@@ -102,6 +102,8 @@ func unWindStructure(m interface{}, baseName string) []fields.FieldInterface {
 				switch t.Field(i).Type.String() {
 				case "string":
 					f = fields.TextField(fName)
+				case "bool":
+					f = fields.Checkbox(fName, false)
 				case "time.Time":
 					f = fields.TextField(fName) // FIX
 				case "int":
