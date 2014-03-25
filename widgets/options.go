@@ -20,3 +20,11 @@ func SelectMenu(style string) *Widget {
 	}
 	return &Widget{templ}
 }
+
+func Checkbox(style string) *Widget {
+	templ, err := template.ParseFiles(fmt.Sprintf("templates/%s/checkbox.html", style))
+	if err != nil {
+		panic(err)
+	}
+	return &Widget{templ}
+}

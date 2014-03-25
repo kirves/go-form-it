@@ -30,7 +30,7 @@ const (
 	URL            = "url"
 	WEEK           = "week"
 	TEXTAREA       = "textarea" //
-	SELECT         = "select"
+	SELECT         = "select"   //
 )
 
 const (

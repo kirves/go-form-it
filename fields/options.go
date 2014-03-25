@@ -12,6 +12,10 @@ type SelectType struct {
 	Field
 }
 
+type CheckBoxType struct {
+	Field
+}
+
 func RadioField(name string, choices map[string]string) *RadioType {
 	ret := &RadioType{
 		FieldWithType(name, RADIO),
@@ -34,4 +38,18 @@ func SelectField(name string, choices map[string]string) *SelectType {
 
 func (t *SelectType) SetStyle(style string) {
 	t.widget = widgets.SelectMenu(style)
+}
+
+func Checkbox(name string, checked bool) *CheckBoxType {
+	ret := &CheckBoxType{
+		FieldWithType(name, CHECKBOX),
+	}
+	if checked {
+		ret.SetParam("checked", "true")
+	}
+	return ret
+}
+
+func (t *CheckBoxType) SetStyle(style string) {
+	t.widget = widgets.Checkbox(style)
 }
