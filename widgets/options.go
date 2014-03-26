@@ -6,7 +6,7 @@ import (
 )
 
 func RadioButton(style string) *Widget {
-	templ, err := template.ParseFiles(fmt.Sprintf("templates/%s/radiobutton.html", style))
+	templ, err := template.ParseFiles(fmt.Sprintf("templates/%s/options/radiobutton.html", style))
 	if err != nil {
 		panic(err)
 	}
@@ -14,7 +14,7 @@ func RadioButton(style string) *Widget {
 }
 
 func SelectMenu(style string) *Widget {
-	templ, err := template.ParseFiles(fmt.Sprintf("templates/%s/select.html", style))
+	templ, err := template.ParseFiles(fmt.Sprintf("templates/%s/options/select.html", style))
 	if err != nil {
 		panic(err)
 	}
@@ -22,7 +22,7 @@ func SelectMenu(style string) *Widget {
 }
 
 func Checkbox(style string) *Widget {
-	templ, err := template.ParseFiles(fmt.Sprintf("templates/%s/checkbox.html", style))
+	templ, err := template.ParseFiles(fmt.Sprintf("templates/%s/options/checkbox.html", style))
 	if err != nil {
 		panic(err)
 	}

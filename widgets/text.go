@@ -6,7 +6,7 @@ import (
 )
 
 func TextInput(style string) *Widget {
-	templ, err := template.ParseFiles(fmt.Sprintf("templates/%s/textinput.html", style))
+	templ, err := template.ParseFiles(fmt.Sprintf("templates/%s/text/textinput.html", style))
 	if err != nil {
 		panic(err)
 	}
@@ -14,7 +14,7 @@ func TextInput(style string) *Widget {
 }
 
 func PasswordInput(style string) *Widget {
-	templ, err := template.ParseFiles(fmt.Sprintf("templates/%s/passwordinput.html", style))
+	templ, err := template.ParseFiles(fmt.Sprintf("templates/%s/text/passwordinput.html", style))
 	if err != nil {
 		panic(err)
 	}
@@ -22,7 +22,7 @@ func PasswordInput(style string) *Widget {
 }
 
 func TextAreaInput(style string) *Widget {
-	templ, err := template.ParseFiles(fmt.Sprintf("templates/%s/textareainput.html", style))
+	templ, err := template.ParseFiles(fmt.Sprintf("templates/%s/text/textareainput.html", style))
 	if err != nil {
 		panic(err)
 	}
