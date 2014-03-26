@@ -93,6 +93,17 @@ func unWindStructure(m interface{}, baseName string) []fields.FieldInterface {
 				f = fields.TextAreaField(fName, 30, 50)
 			case "password":
 				f = fields.PasswordField(fName)
+			case "select":
+				choices := strings.Split(t.Field(i).Tag.Get("form_choices"), "|")
+				if len(choices)%2 != 0 {
+					f = nil
+					break
+				}
+				chMap := make(map[string]string)
+				for i := 0; i < len(choices)-1; i += 2 {
+					chMap[choices[i]] = choices[i+1]
+				}
+				f = fields.SelectField(fName, chMap)
 			case "date":
 			case "datetime":
 			case "time":
@@ -103,7 +114,12 @@ func unWindStructure(m interface{}, baseName string) []fields.FieldInterface {
 				case "string":
 					f = fields.TextField(fName)
 				case "bool":
-					f = fields.Checkbox(fName, false)
+					initVal := t.Field(i).Tag.Get("form_checked")
+					if initVal != "" {
+						f = fields.Checkbox(fName, true)
+					} else {
+						f = fields.Checkbox(fName, false)
+					}
 				case "time.Time":
 					f = fields.TextField(fName) // FIX
 				case "int":
