@@ -1,7 +1,7 @@
 package fields
 
 import (
-	"github.com/kirves/revel-forms/widgets"
+	"github.com/kirves/revel-forms/common"
 )
 
 type RadioType struct {
@@ -18,31 +18,31 @@ type CheckBoxType struct {
 
 func RadioField(name string, choices map[string]string) *RadioType {
 	ret := &RadioType{
-		FieldWithType(name, RADIO),
+		FieldWithType(name, formcommon.RADIO),
 	}
 	ret.SetChoices(choices)
 	return ret
 }
 
-func (t *RadioType) SetStyle(style string) {
-	t.widget = widgets.RadioButton(style)
-}
+// func (t *RadioType) SetStyle(style string) {
+// 	t.widget = widgets.RadioButton(style)
+// }
 
 func SelectField(name string, choices map[string]string) *SelectType {
 	ret := &SelectType{
-		FieldWithType(name, SELECT),
+		FieldWithType(name, formcommon.SELECT),
 	}
 	ret.SetChoices(choices)
 	return ret
 }
 
-func (t *SelectType) SetStyle(style string) {
-	t.widget = widgets.SelectMenu(style)
-}
+// func (t *SelectType) SetStyle(style string) {
+// 	t.widget = widgets.SelectMenu(style)
+// }
 
 func Checkbox(name string, checked bool) *CheckBoxType {
 	ret := &CheckBoxType{
-		FieldWithType(name, CHECKBOX),
+		FieldWithType(name, formcommon.CHECKBOX),
 	}
 	if checked {
 		ret.SetParam("checked", "true")
@@ -50,6 +50,6 @@ func Checkbox(name string, checked bool) *CheckBoxType {
 	return ret
 }
 
-func (t *CheckBoxType) SetStyle(style string) {
-	t.widget = widgets.Checkbox(style)
-}
+// func (t *CheckBoxType) SetStyle(style string) {
+// 	t.widget = widgets.Checkbox(style)
+// }

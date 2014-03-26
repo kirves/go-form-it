@@ -1,6 +1,7 @@
 package forms
 
 import (
+	"github.com/kirves/revel-forms/common"
 	"github.com/kirves/revel-forms/fields"
 	"html/template"
 	"reflect"
@@ -33,7 +34,7 @@ func BaseForm(method, action string) *Form {
 	return &Form{
 		make([]fields.FieldInterface, 0),
 		make(map[string]int),
-		fields.BASE,
+		formcommon.BASE,
 		tmpl,
 		[]string{},
 		"",
@@ -52,7 +53,7 @@ func BootstrapForm(method, action string) *Form {
 	return &Form{
 		make([]fields.FieldInterface, 0),
 		make(map[string]int),
-		fields.BOOTSTRAP,
+		formcommon.BOOTSTRAP,
 		tmpl,
 		[]string{},
 		"",

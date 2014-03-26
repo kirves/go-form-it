@@ -1,7 +1,7 @@
 package fields
 
 import (
-	"github.com/kirves/revel-forms/widgets"
+	"github.com/kirves/revel-forms/common"
 )
 
 type SubmitButtonType struct {
@@ -14,24 +14,24 @@ type ResetButtonType struct {
 
 func SubmitButton(name string, text string) *SubmitButtonType {
 	ret := &SubmitButtonType{
-		FieldWithType(name, SUBMIT),
+		FieldWithType(name, formcommon.SUBMIT),
 	}
 	ret.SetText(text)
 	return ret
 }
 
-func (b *SubmitButtonType) SetStyle(style string) {
-	b.widget = widgets.Button(style)
-}
+// func (b *SubmitButtonType) SetStyle(style string) {
+// 	b.widget = widgets.Button(style)
+// }
 
 func ResetButton(name string, text string) *ResetButtonType {
 	ret := &ResetButtonType{
-		FieldWithType(name, RESET),
+		FieldWithType(name, formcommon.RESET),
 	}
 	ret.SetText(text)
 	return ret
 }
 
-func (b *ResetButtonType) SetStyle(style string) {
-	b.widget = widgets.Button(style)
-}
+// func (b *ResetButtonType) SetStyle(style string) {
+// 	b.widget = widgets.Button(style)
+// }
