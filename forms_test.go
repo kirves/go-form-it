@@ -12,12 +12,7 @@ var (
 
 func TestFieldRender(t *testing.T) {
 	field := fields.TextField("test")
-	field.AddClass("test")
-	field.AddClass("class")
-	field.SetId("testId")
-	field.SetParam("param1", "val1")
-	field.AddCss("css1", "val1")
-	field.SetStyle(formcommon.BASE)
+	field.AddClass("test").AddClass("class").SetId("testId").SetParam("param1", "val1").AddCss("css1", "val1").SetStyle(formcommon.BASE)
 	t.Log("Rendered field:", field.Render())
 	txt = field
 }

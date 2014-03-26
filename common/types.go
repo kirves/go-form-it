@@ -1,22 +1,22 @@
 package formcommon
 
 const (
-	BUTTON         = "button" //
-	CHECKBOX       = "checkbox"
+	BUTTON         = "button"   //
+	CHECKBOX       = "checkbox" //
 	COLOR          = "color"
 	DATE           = "date"
 	DATETIME       = "datetime"
 	DATETIME_LOCAL = "datetime-local"
 	EMAIL          = "email"
 	FILE           = "file"
-	HIDDEN         = "hidden"
+	HIDDEN         = "hidden" //
 	IMAGE          = "image"
 	MONTH          = "month"
-	NUMBER         = "number"
+	NUMBER         = "number"   //
 	PASSWORD       = "password" //
-	RADIO          = "radio"
-	RANGE          = "range"
-	RESET          = "reset" //
+	RADIO          = "radio"    //
+	RANGE          = "range"    //
+	RESET          = "reset"    //
 	SEARCH         = "search"
 	SUBMIT         = "submit" //
 	TEL            = "tel"
