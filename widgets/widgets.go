@@ -47,11 +47,15 @@ func BaseWidget(style, inputType string) *Widget {
 		urls = append(urls, "templates/%s/button.html")
 	case formcommon.SUBMIT:
 		urls = append(urls, "templates/%s/button.html")
-	case formcommon.DATE,
-		formcommon.DATETIME,
-		formcommon.TIME,
-		formcommon.DATETIME_LOCAL,
-		formcommon.SEARCH,
+	case formcommon.DATE:
+		urls = append(urls, "templates/%s/datetime/date.html")
+	case formcommon.DATETIME:
+		urls = append(urls, "templates/%s/datetime/datetime.html")
+	case formcommon.TIME:
+		urls = append(urls, "templates/%s/datetime/time.html")
+	case formcommon.DATETIME_LOCAL:
+		urls = append(urls, "templates/%s/datetime/datetime.html")
+	case formcommon.SEARCH,
 		formcommon.TEL,
 		formcommon.URL,
 		formcommon.WEEK,
