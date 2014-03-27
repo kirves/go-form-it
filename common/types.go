@@ -4,9 +4,9 @@ const (
 	BUTTON         = "button"   //
 	CHECKBOX       = "checkbox" //
 	COLOR          = "color"
-	DATE           = "date"
-	DATETIME       = "datetime"
-	DATETIME_LOCAL = "datetime-local"
+	DATE           = "date"           //
+	DATETIME       = "datetime"       //
+	DATETIME_LOCAL = "datetime-local" //
 	EMAIL          = "email"
 	FILE           = "file"
 	HIDDEN         = "hidden" //
@@ -26,6 +26,7 @@ const (
 	WEEK           = "week"
 	TEXTAREA       = "textarea" //
 	SELECT         = "select"   //
+	STATIC         = "static"
 )
 
 const (

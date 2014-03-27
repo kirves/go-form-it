@@ -55,6 +55,8 @@ func BaseWidget(style, inputType string) *Widget {
 		urls = append(urls, "templates/%s/datetime/time.html")
 	case formcommon.DATETIME_LOCAL:
 		urls = append(urls, "templates/%s/datetime/datetime.html")
+	case formcommon.STATIC:
+		urls = append(urls, "templates/%s/static.html")
 	case formcommon.SEARCH,
 		formcommon.TEL,
 		formcommon.URL,
