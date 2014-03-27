@@ -32,6 +32,8 @@ type FieldInterface interface {
 	SetText(text string) FieldInterface
 	SetLabel(label string) FieldInterface
 	SetChoices(choices map[string]string) FieldInterface
+	Disabled() FieldInterface
+	Enabled() FieldInterface
 }
 
 func FieldWithType(name, t string) Field {
@@ -133,5 +135,15 @@ func (f *Field) AddCss(key, value string) FieldInterface {
 
 func (f *Field) RemoveCss(key string) FieldInterface {
 	delete(f.css, key)
+	return f
+}
+
+func (f *Field) Disabled() FieldInterface {
+	f.SetParam("disabled", "true")
+	return f
+}
+
+func (f *Field) Enabled() FieldInterface {
+	f.DeleteParam("disabled")
 	return f
 }
