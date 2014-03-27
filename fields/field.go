@@ -6,16 +6,17 @@ import (
 )
 
 type Field struct {
-	fieldType string
-	widget    widgets.WidgetInterface
-	name      string
-	class     []string
-	id        string
-	params    map[string]string
-	css       map[string]string
-	text      string
-	label     string
-	choices   map[string]string
+	fieldType  string
+	widget     widgets.WidgetInterface
+	name       string
+	class      []string
+	id         string
+	params     map[string]string
+	css        map[string]string
+	text       string
+	label      string
+	choices    map[string]string
+	labelClass []string
 }
 
 type FieldInterface interface {
@@ -31,6 +32,8 @@ type FieldInterface interface {
 	SetStyle(style string) FieldInterface
 	SetText(text string) FieldInterface
 	SetLabel(label string) FieldInterface
+	AddLabelClass(class string) FieldInterface
+	RemoveLabelClass(class string) FieldInterface
 	SetChoices(choices map[string]string) FieldInterface
 	Disabled() FieldInterface
 	Enabled() FieldInterface
@@ -48,6 +51,7 @@ func FieldWithType(name, t string) Field {
 		"",
 		"",
 		map[string]string{},
+		[]string{},
 	}
 }
 
@@ -63,15 +67,16 @@ func (f *Field) Name() string {
 func (f *Field) Render() template.HTML {
 	if f.widget != nil {
 		data := map[string]interface{}{
-			"classes": f.class,
-			"id":      f.id,
-			"name":    f.name,
-			"params":  f.params,
-			"css":     f.css,
-			"text":    f.text,
-			"type":    f.fieldType,
-			"label":   f.label,
-			"choices": f.choices,
+			"classes":      f.class,
+			"id":           f.id,
+			"name":         f.name,
+			"params":       f.params,
+			"css":          f.css,
+			"text":         f.text,
+			"type":         f.fieldType,
+			"label":        f.label,
+			"choices":      f.choices,
+			"labelClasses": f.labelClass,
 		}
 		return template.HTML(f.widget.Render(data))
 	}
@@ -110,6 +115,26 @@ func (f *Field) SetText(text string) FieldInterface {
 
 func (f *Field) SetLabel(label string) FieldInterface {
 	f.label = label
+	return f
+}
+
+func (f *Field) AddLabelClass(class string) FieldInterface {
+	f.labelClass = append(f.labelClass, class)
+	return f
+}
+
+func (f *Field) RemoveLabelClass(class string) FieldInterface {
+	ind := -1
+	for i, v := range f.labelClass {
+		if v == class {
+			ind = i
+			break
+		}
+	}
+
+	if ind != -1 {
+		f.labelClass = append(f.labelClass[:ind], f.labelClass[ind+1:]...)
+	}
 	return f
 }
 
