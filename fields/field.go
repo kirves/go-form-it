@@ -17,6 +17,7 @@ type Field struct {
 	label      string
 	choices    map[string]string
 	labelClass []string
+	tag        []string
 }
 
 type FieldInterface interface {
@@ -24,6 +25,8 @@ type FieldInterface interface {
 	Render() template.HTML
 	AddClass(class string) FieldInterface
 	RemoveClass(class string) FieldInterface
+	AddTag(class string) FieldInterface
+	RemoveTag(class string) FieldInterface
 	SetId(id string) FieldInterface
 	SetParam(key, value string) FieldInterface
 	DeleteParam(key string) FieldInterface
@@ -52,6 +55,7 @@ func FieldWithType(name, t string) Field {
 		"",
 		map[string]string{},
 		[]string{},
+		[]string{},
 	}
 }
 
@@ -77,6 +81,7 @@ func (f *Field) Render() template.HTML {
 			"label":        f.label,
 			"choices":      f.choices,
 			"labelClasses": f.labelClass,
+			"tags":         f.tag,
 		}
 		return template.HTML(f.widget.Render(data))
 	}
@@ -164,11 +169,31 @@ func (f *Field) RemoveCss(key string) FieldInterface {
 }
 
 func (f *Field) Disabled() FieldInterface {
-	f.SetParam("disabled", "true")
+	f.AddTag("disabled")
 	return f
 }
 
 func (f *Field) Enabled() FieldInterface {
-	f.DeleteParam("disabled")
+	f.RemoveTag("disabled")
+	return f
+}
+
+func (f *Field) AddTag(tag string) FieldInterface {
+	f.tag = append(f.tag, tag)
+	return f
+}
+
+func (f *Field) RemoveTag(tag string) FieldInterface {
+	ind := -1
+	for i, v := range f.tag {
+		if v == tag {
+			ind = i
+			break
+		}
+	}
+
+	if ind != -1 {
+		f.tag = append(f.tag[:ind], f.tag[ind+1:]...)
+	}
 	return f
 }

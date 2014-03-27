@@ -24,10 +24,6 @@ func RadioField(name string, choices map[string]string) *RadioType {
 	return ret
 }
 
-// func (t *RadioType) SetStyle(style string) {
-// 	t.widget = widgets.RadioButton(style)
-// }
-
 func SelectField(name string, choices map[string]string) *SelectType {
 	ret := &SelectType{
 		FieldWithType(name, formcommon.SELECT),
@@ -36,20 +32,12 @@ func SelectField(name string, choices map[string]string) *SelectType {
 	return ret
 }
 
-// func (t *SelectType) SetStyle(style string) {
-// 	t.widget = widgets.SelectMenu(style)
-// }
-
 func Checkbox(name string, checked bool) *CheckBoxType {
 	ret := &CheckBoxType{
 		FieldWithType(name, formcommon.CHECKBOX),
 	}
 	if checked {
-		ret.SetParam("checked", "true")
+		ret.AddTag("checked")
 	}
 	return ret
 }
-
-// func (t *CheckBoxType) SetStyle(style string) {
-// 	t.widget = widgets.Checkbox(style)
-// }
