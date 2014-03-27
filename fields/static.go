@@ -9,7 +9,7 @@ type StaticType struct {
 }
 
 func StaticField(name, content string) *StaticType {
-	ret := &RangeType{
+	ret := &StaticType{
 		FieldWithType(name, formcommon.STATIC),
 	}
 	ret.SetText(content)

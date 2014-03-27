@@ -17,6 +17,8 @@ var (
 func TestFieldRender(t *testing.T) {
 	field := fields.TextField("test")
 	field.AddClass("test").AddClass("class").SetId("testId").SetParam("param1", "val1").AddCss("css1", "val1").SetStyle(formcommon.BASE).Disabled()
+	field.AddLabelClass("LABEL")
+	field.SetLabel("This is a label")
 	t.Log("Rendered field:", field.Render())
 	txt = field
 }
