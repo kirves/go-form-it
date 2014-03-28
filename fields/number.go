@@ -53,7 +53,7 @@ func NumberFieldFromInstance(i interface{}, fieldNo int, name string) *NumberTyp
 
 func RangeFieldFromInstance(i interface{}, fieldNo int, name string) *RangeType {
 	ret := &RangeType{
-		FieldWithType(name, formcommon.NUMBER),
+		FieldWithType(name, formcommon.RANGE),
 	}
 	// check tags
 	t := reflect.TypeOf(i).Field(fieldNo).Tag
@@ -62,6 +62,9 @@ func RangeFieldFromInstance(i interface{}, fieldNo int, name string) *RangeType 
 	}
 	if v := t.Get("form_max"); v != "" {
 		ret.SetParam("max", v)
+	}
+	if v := t.Get("form_step"); v != "" {
+		ret.SetParam("step", v)
 	}
 	if v := t.Get("form_value"); v != "" {
 		ret.SetValue(v)
