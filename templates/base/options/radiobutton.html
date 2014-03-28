@@ -1,3 +1,4 @@
 {{ define "main"}}{{ $p := . }}{{ range $k, $v := .choices }}
 <label{{ if $p.labelClasses }} class="{{range $p.labelClasses}}{{.}} {{end}}"{{end}} for="{{$k}}">{{$v}}</label>
-<input type="radio" name="{{$p.name}}"{{ if $p.classes }} class="{{range $p.classes}}{{.}} {{end}}"{{end}} id="{{$k}}"{{if $p.params}}{{range $k2, $v2 := $p.params}} {{$k2}}="{{$v2}}"{{end}}{{end}}{{if $p.css}} style="{{range $k2, $v2 := .css}}{{$k2}}: {{$v2}}; {{end}}"{{end}}{{range .tags}} {{.}}{{end}}>{{end}}{{end}}
+<input type="radio" name="{{$p.name}}"{{ if $p.classes }} class="{{range $p.classes}}{{.}} {{end}}"{{end}} id="{{$k}}"{{if $p.params}}{{range $k2, $v2 := $p.params}} {{$k2}}="{{$v2}}"{{end}}{{end}}{{if $p.css}} style="{{range $k2, $v2 := .css}}{{$k2}}: {{$v2}}; {{end}}"{{end}}{{range .tags}} {{.}}{{end}}>{{end}}
+{{end}}
