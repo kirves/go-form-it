@@ -4,6 +4,7 @@ import (
 	"github.com/kirves/revel-forms/common"
 	"github.com/kirves/revel-forms/fields"
 	"testing"
+	"time"
 )
 
 const (
@@ -81,9 +82,11 @@ func TestFormRender(t *testing.T) {
 func TestFormFromModel(t *testing.T) {
 	type Model struct {
 		User     string
-		Password string `form_widget:"password"`
+		Password string    `form_widget:"password"`
+		Id       int       `form_min:"0"form_max:"5"`
+		Ts       time.Time `form_min:"2013-04-22T15:00"`
 	}
 
-	form := BaseFormFromModel(Model{}, POST, "")
+	form := BaseFormFromModel(Model{"asd", "lol", 20, time.Now()}, POST, "")
 	t.Log("Rendered form:", form.Render())
 }

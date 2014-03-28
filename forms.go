@@ -75,6 +75,7 @@ func BaseFormFromModel(m interface{}, method, action string) *Form {
 
 func unWindStructure(m interface{}, baseName string) []fields.FieldInterface {
 	t := reflect.TypeOf(m)
+	v := reflect.ValueOf(m)
 	fieldList := make([]fields.FieldInterface, 0)
 	for i := 0; i < t.NumField(); i++ {
 		tag := t.Field(i).Tag.Get("form_skip")
@@ -106,9 +107,13 @@ func unWindStructure(m interface{}, baseName string) []fields.FieldInterface {
 				}
 				f = fields.SelectField(fName, chMap)
 			case "date":
+				f = fields.DateField(fName)
 			case "datetime":
+				f = fields.DatetimeFieldFromInstance(m, i, fName)
 			case "time":
+				f = fields.TimeField(fName)
 			case "number":
+				f = fields.NumberFieldFromInstance(m, i, fName)
 			case "range":
 			default:
 				switch t.Field(i).Type.String() {
@@ -122,11 +127,11 @@ func unWindStructure(m interface{}, baseName string) []fields.FieldInterface {
 						f = fields.Checkbox(fName, false)
 					}
 				case "time.Time":
-					f = fields.TextField(fName) // FIX
+					f = fields.DatetimeFieldFromInstance(m, i, fName)
 				case "int":
-					f = fields.TextField(fName) // FIX
+					f = fields.NumberFieldFromInstance(m, i, fName)
 				case "struct":
-					fieldList = append(fieldList, unWindStructure(reflect.New(t.Field(i).Type).Elem().Interface(), fName)...)
+					fieldList = append(fieldList, unWindStructure(v.Field(i).Interface(), fName)...)
 					f = nil
 				default:
 					f = fields.TextField(fName)
