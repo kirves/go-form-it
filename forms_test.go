@@ -75,9 +75,9 @@ func TestNumberRender(t *testing.T) {
 
 func TestFormRender(t *testing.T) {
 	form := BootstrapForm(POST, "")
-	form.AddField(txt)
-	form.AddField(psw)
-	form.AddField(btn)
+	form.Elements(&FieldSetType{}, txt, psw, btn)
+	// form.AddField(psw)
+	// form.AddField(btn)
 	t.Log("Rendered form:", form.Render())
 }
 
@@ -106,5 +106,16 @@ func TestBSFormFromModel(t *testing.T) {
 	}
 
 	form := BootstrapFormFromModel(Model{"asd", "lol", 20, time.Now(), "B", false}, POST, "")
+	t.Log("Rendered form:", form.Render())
+}
+
+func TestInlineCreation(t *testing.T) {
+	form := BootstrapForm(POST, "").Elements(
+		fields.TextField("test").AddClass("test").AddClass("class").SetId("testId").SetParam("param1", "val1").AddCss("css1", "val1"),
+		FieldSet("FS1",
+			fields.PasswordField("test"),
+		).Disable(),
+		fields.SubmitButton("btn", "Click me!"),
+	)
 	t.Log("Rendered form:", form.Render())
 }

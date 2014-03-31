@@ -14,7 +14,7 @@ const (
 )
 
 type Form struct {
-	fields   []fields.FieldInterface
+	fields   []FormElement
 	fieldMap map[string]int
 	style    string
 	template *template.Template
@@ -32,7 +32,7 @@ func BaseForm(method, action string) *Form {
 		panic(err)
 	}
 	return &Form{
-		make([]fields.FieldInterface, 0),
+		make([]FormElement, 0),
 		make(map[string]int),
 		formcommon.BASE,
 		tmpl,
@@ -51,7 +51,7 @@ func BootstrapForm(method, action string) *Form {
 		panic(err)
 	}
 	return &Form{
-		make([]fields.FieldInterface, 0),
+		make([]FormElement, 0),
 		make(map[string]int),
 		formcommon.BOOTSTRAP,
 		tmpl,
@@ -67,18 +67,18 @@ func BootstrapForm(method, action string) *Form {
 func BaseFormFromModel(m interface{}, method, action string) *Form {
 	form := BaseForm(method, action)
 	for _, v := range unWindStructure(m, "") {
-		form.AddField(v)
+		form.Elements(v)
 	}
-	form.AddField(fields.SubmitButton("submit", "Submit"))
+	form.Elements(fields.SubmitButton("submit", "Submit"))
 	return form
 }
 
 func BootstrapFormFromModel(m interface{}, method, action string) *Form {
 	form := BootstrapForm(method, action)
 	for _, v := range unWindStructure(m, "") {
-		form.AddField(v)
+		form.Elements(v)
 	}
-	form.AddField(fields.SubmitButton("submit", "Submit"))
+	form.Elements(fields.SubmitButton("submit", "Submit"))
 	return form
 }
 
