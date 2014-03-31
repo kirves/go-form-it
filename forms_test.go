@@ -42,18 +42,20 @@ func TestButtonRender(t *testing.T) {
 }
 
 func TestRadioButtonRender(t *testing.T) {
-	field := fields.RadioField("radio", map[string]string{
-		"choice1": "value1",
-		"choice2": "value2",
+	field := fields.RadioField("radio", []fields.InputChoice{
+		fields.InputChoice{Id: "choice1", Val: "value1"},
+		fields.InputChoice{Id: "choice2", Val: "value2"},
 	})
 	field.SetStyle(style)
 	t.Log("Rendered radio:", field.Render())
 }
 
 func TestSelectRender(t *testing.T) {
-	field := fields.SelectField("select", map[string]string{
-		"choice1": "value1",
-		"choice2": "value2",
+	field := fields.SelectField("select", map[string][]fields.InputChoice{
+		"": []fields.InputChoice{
+			fields.InputChoice{"choice1", "value1"},
+			fields.InputChoice{"choice2", "value2"},
+		},
 	})
 	field.SetStyle(style)
 	t.Log("Rendered select:", field.Render())
@@ -85,7 +87,7 @@ func TestFormFromModel(t *testing.T) {
 		password  string    `form_widget:"password"`
 		Id        int       `form_min:"0" form_max:"5"`
 		Ts        time.Time `form_min:"2013-04-22T15:00"`
-		RadioTest string    `form_widget:"select" form_choices:"A|Option A|B|Option B" form_value:"A"`
+		RadioTest string    `form_widget:"select" form_choices:"|A|Option A|G1|B|Option B" form_value:"A"`
 		BoolTest  bool      //`form_options:"checked"`
 	}
 
