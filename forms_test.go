@@ -94,3 +94,17 @@ func TestFormFromModel(t *testing.T) {
 	form := BaseFormFromModel(Model{"asd", "lol", 20, time.Now(), "B", false}, POST, "")
 	t.Log("Rendered form:", form.Render())
 }
+
+func TestBSFormFromModel(t *testing.T) {
+	type Model struct {
+		User      string    `form_label:"User label test"`
+		password  string    `form_widget:"password"`
+		Id        int       `form_min:"0" form_max:"5"`
+		Ts        time.Time `form_min:"2013-04-22T15:00"`
+		RadioTest string    `form_widget:"select" form_choices:"|A|Option A|G1|B|Option B" form_value:"A"`
+		BoolTest  bool      //`form_options:"checked"`
+	}
+
+	form := BootstrapFormFromModel(Model{"asd", "lol", 20, time.Now(), "B", false}, POST, "")
+	t.Log("Rendered form:", form.Render())
+}
