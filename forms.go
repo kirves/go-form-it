@@ -73,6 +73,15 @@ func BaseFormFromModel(m interface{}, method, action string) *Form {
 	return form
 }
 
+func BootstrapFormFromModel(m interface{}, method, action string) *Form {
+	form := BootstrapForm(method, action)
+	for _, v := range unWindStructure(m, "") {
+		form.AddField(v)
+	}
+	form.AddField(fields.SubmitButton("submit", "Submit"))
+	return form
+}
+
 func unWindStructure(m interface{}, baseName string) []fields.FieldInterface {
 	t := reflect.TypeOf(m)
 	v := reflect.ValueOf(m)
