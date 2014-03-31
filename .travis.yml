@@ -1,5 +1,5 @@
 language: go
-script: "go build"
+script: "go build -v"
 go:
 - 1.2
 - tip
