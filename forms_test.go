@@ -81,12 +81,14 @@ func TestFormRender(t *testing.T) {
 
 func TestFormFromModel(t *testing.T) {
 	type Model struct {
-		User     string
-		Password string    `form_widget:"password"`
-		Id       int       `form_min:"0"form_max:"5"`
-		Ts       time.Time `form_min:"2013-04-22T15:00"`
+		User      string    `form_label:"User label test"`
+		password  string    `form_widget:"password"`
+		Id        int       `form_min:"0" form_max:"5"`
+		Ts        time.Time `form_min:"2013-04-22T15:00"`
+		RadioTest string    `form_widget:"select" form_choices:"A|Option A|B|Option B" form_value:"A"`
+		BoolTest  bool      //`form_options:"checked"`
 	}
 
-	form := BaseFormFromModel(Model{"asd", "lol", 20, time.Now()}, POST, "")
+	form := BaseFormFromModel(Model{"asd", "lol", 20, time.Now(), "B", false}, POST, "")
 	t.Log("Rendered form:", form.Render())
 }
