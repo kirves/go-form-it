@@ -15,7 +15,7 @@ type Field struct {
 	css        map[string]string
 	text       string
 	label      string
-	choices    map[string]string
+	choices    map[string][]InputChoice
 	labelClass []string
 	tag        []string
 	value      string
@@ -38,7 +38,7 @@ type FieldInterface interface {
 	SetLabel(label string) FieldInterface
 	AddLabelClass(class string) FieldInterface
 	RemoveLabelClass(class string) FieldInterface
-	SetChoices(choices map[string]string) FieldInterface
+	SetChoices(choices map[string][]InputChoice) FieldInterface
 	SetValue(value string) FieldInterface
 	Disabled() FieldInterface
 	Enabled() FieldInterface
@@ -55,7 +55,7 @@ func FieldWithType(name, t string) Field {
 		map[string]string{},
 		"",
 		"",
-		map[string]string{},
+		map[string][]InputChoice{},
 		[]string{},
 		[]string{},
 		"",
@@ -147,7 +147,7 @@ func (f *Field) RemoveLabelClass(class string) FieldInterface {
 	return f
 }
 
-func (f *Field) SetChoices(choices map[string]string) FieldInterface {
+func (f *Field) SetChoices(choices map[string][]InputChoice) FieldInterface {
 	f.choices = choices
 	return f
 }

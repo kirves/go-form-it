@@ -7,6 +7,10 @@ import (
 	"strings"
 )
 
+type InputChoice struct {
+	Id, Val string
+}
+
 type RadioType struct {
 	Field
 }
@@ -19,15 +23,18 @@ type CheckBoxType struct {
 	Field
 }
 
-func RadioField(name string, choices map[string]string) *RadioType {
+func RadioField(name string, choices []InputChoice) *RadioType {
 	ret := &RadioType{
 		FieldWithType(name, formcommon.RADIO),
 	}
-	ret.SetChoices(choices)
+	chMap := map[string][]InputChoice{
+		"": choices,
+	}
+	ret.SetChoices(chMap)
 	return ret
 }
 
-func SelectField(name string, choices map[string]string) *SelectType {
+func SelectField(name string, choices map[string][]InputChoice) *SelectType {
 	ret := &SelectType{
 		FieldWithType(name, formcommon.SELECT),
 	}
@@ -46,20 +53,19 @@ func Checkbox(name string, checked bool) *CheckBoxType {
 }
 
 func RadioFieldFromInstance(i interface{}, fieldNo int, name string) *RadioType {
-	ret := &RadioType{
-		FieldWithType(name, formcommon.RADIO),
-	}
 	t := reflect.TypeOf(i).Field(fieldNo).Tag
 	choices := strings.Split(t.Get("form_choices"), "|")
+	chArr := make([]InputChoice, 0)
 	chMap := make(map[string]string)
 	for i := 0; i < len(choices)-1; i += 2 {
+		chArr = append(chArr, InputChoice{choices[i], choices[i+1]})
 		chMap[choices[i]] = choices[i+1]
 	}
-	ret.SetChoices(chMap)
+	ret := RadioField(name, chArr)
 
 	var v string = t.Get("form_value")
 	if v == "" {
-		v = fmt.Sprintf("%s", reflect.ValueOf(i).Field(fieldNo).Interface())
+		v = fmt.Sprintf("%s", reflect.ValueOf(i).Field(fieldNo).String())
 	}
 	if _, ok := chMap[v]; ok {
 		ret.SetValue(v)
@@ -68,18 +74,20 @@ func RadioFieldFromInstance(i interface{}, fieldNo int, name string) *RadioType 
 }
 
 func SelectFieldFromInstance(i interface{}, fieldNo int, name string) *SelectType {
-	ret := &SelectType{
-		FieldWithType(name, formcommon.SELECT),
-	}
 	t := reflect.TypeOf(i).Field(fieldNo).Tag
 	choices := strings.Split(t.Get("form_choices"), "|")
+	chArr := make(map[string][]InputChoice)
 	chMap := make(map[string]string)
-	for i := 0; i < len(choices)-1; i += 2 {
-		chMap[choices[i]] = choices[i+1]
+	for i := 0; i < len(choices)-2; i += 3 {
+		if _, ok := chArr[choices[i]]; !ok {
+			chArr[choices[i]] = make([]InputChoice, 0)
+		}
+		chArr[choices[i]] = append(chArr[choices[i]], InputChoice{choices[i+1], choices[i+2]})
+		chMap[choices[i+1]] = choices[i+2]
 	}
-	ret.SetChoices(chMap)
+	ret := SelectField(name, chArr)
 
-	var v string = fmt.Sprintf("%s", reflect.ValueOf(i).Field(fieldNo).Interface())
+	var v string = fmt.Sprintf("%s", reflect.ValueOf(i).Field(fieldNo).String())
 	if v == "" {
 		v = t.Get("form_value")
 	}
