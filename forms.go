@@ -1,6 +1,7 @@
 package forms
 
 import (
+	"fmt"
 	"github.com/kirves/revel-forms/common"
 	"github.com/kirves/revel-forms/fields"
 	"html/template"
@@ -78,9 +79,16 @@ func unWindStructure(m interface{}, baseName string) []fields.FieldInterface {
 	v := reflect.ValueOf(m)
 	fieldList := make([]fields.FieldInterface, 0)
 	for i := 0; i < t.NumField(); i++ {
-		tag := t.Field(i).Tag.Get("form_skip")
-		if tag == "" {
-			tag = t.Field(i).Tag.Get("form_widget")
+		optionsArr := strings.Split(t.Field(i).Tag.Get("form_options"), ",")
+		options := make(map[string]struct{})
+		for _, opt := range optionsArr {
+			if opt != "" {
+				options[opt] = struct{}{}
+			}
+		}
+		fmt.Println("Field", t.Field(i).Name, "- anonymous:", t.Field(i).Anonymous)
+		if _, ok := options["skip"]; !ok && !t.Field(i).Anonymous {
+			widget := t.Field(i).Tag.Get("form_widget")
 			var f fields.FieldInterface
 			var fName string
 			if baseName == "" {
@@ -88,44 +96,35 @@ func unWindStructure(m interface{}, baseName string) []fields.FieldInterface {
 			} else {
 				fName = strings.Join([]string{baseName, t.Field(i).Name}, ".")
 			}
-			switch tag {
+			switch widget {
 			case "text":
-				f = fields.TextField(fName)
+				f = fields.TextFieldFromInstance(m, i, fName)
 			case "textarea":
-				f = fields.TextAreaField(fName, 30, 50)
+				f = fields.TextAreaFieldFromInstance(m, i, fName)
 			case "password":
-				f = fields.PasswordField(fName)
+				f = fields.PasswordFieldFromInstance(m, i, fName)
 			case "select":
-				choices := strings.Split(t.Field(i).Tag.Get("form_choices"), "|")
-				if len(choices)%2 != 0 {
-					f = nil
-					break
-				}
-				chMap := make(map[string]string)
-				for i := 0; i < len(choices)-1; i += 2 {
-					chMap[choices[i]] = choices[i+1]
-				}
-				f = fields.SelectField(fName, chMap)
+				f = fields.SelectFieldFromInstance(m, i, fName)
 			case "date":
-				f = fields.DateField(fName)
+				f = fields.DateFieldFromInstance(m, i, fName)
 			case "datetime":
 				f = fields.DatetimeFieldFromInstance(m, i, fName)
 			case "time":
-				f = fields.TimeField(fName)
+				f = fields.TimeFieldFromInstance(m, i, fName)
 			case "number":
 				f = fields.NumberFieldFromInstance(m, i, fName)
 			case "range":
+				f = fields.RangeFieldFromInstance(m, i, fName)
+			case "radio":
+				f = fields.RadioFieldFromInstance(m, i, fName)
+			case "static":
+				f = fields.StaticFieldFromInstance(m, i, fName)
 			default:
 				switch t.Field(i).Type.String() {
 				case "string":
-					f = fields.TextField(fName)
+					f = fields.TextFieldFromInstance(m, i, fName)
 				case "bool":
-					initVal := t.Field(i).Tag.Get("form_checked")
-					if initVal != "" {
-						f = fields.Checkbox(fName, true)
-					} else {
-						f = fields.Checkbox(fName, false)
-					}
+					f = fields.CheckboxFromInstance(m, i, fName, options)
 				case "time.Time":
 					f = fields.DatetimeFieldFromInstance(m, i, fName)
 				case "int":
@@ -134,11 +133,16 @@ func unWindStructure(m interface{}, baseName string) []fields.FieldInterface {
 					fieldList = append(fieldList, unWindStructure(v.Field(i).Interface(), fName)...)
 					f = nil
 				default:
-					f = fields.TextField(fName)
+					f = fields.TextFieldFromInstance(m, i, fName)
 				}
 			}
 			if f != nil {
-				f.SetLabel(strings.Title(t.Field(i).Name))
+				label := t.Field(i).Tag.Get("form_label")
+				if label != "" {
+					f.SetLabel(label)
+				} else {
+					f.SetLabel(strings.Title(t.Field(i).Name))
+				}
 				fieldList = append(fieldList, f)
 			}
 		}
