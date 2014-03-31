@@ -1,7 +1,6 @@
 package forms
 
 import (
-	"fmt"
 	"github.com/kirves/revel-forms/common"
 	"github.com/kirves/revel-forms/fields"
 	"html/template"
@@ -86,8 +85,7 @@ func unWindStructure(m interface{}, baseName string) []fields.FieldInterface {
 				options[opt] = struct{}{}
 			}
 		}
-		fmt.Println("Field", t.Field(i).Name, "- anonymous:", t.Field(i).Anonymous)
-		if _, ok := options["skip"]; !ok && !t.Field(i).Anonymous {
+		if _, ok := options["skip"]; !ok {
 			widget := t.Field(i).Tag.Get("form_widget")
 			var f fields.FieldInterface
 			var fName string
