@@ -3,4 +3,5 @@
 	<input type="checkbox" name="{{.name}}"{{ if .classes }} class="{{range .classes}}{{.}} {{end}}"{{end}}{{if .id}} id="{{.id}}"{{end}}{{if .params}}{{range $k, $v := .params}} {{$k}}="{{$v}}"{{end}}{{end}}{{if .css}} style="{{range $k, $v := .css}}{{$k}}: {{$v}}; {{end}}"{{end}}{{range .tags}} {{.}}{{end}}>
 	{{.label}}
 </label>
-</div>{{end}}
+</div>
+{{end}}
