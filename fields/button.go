@@ -4,14 +4,17 @@ import (
 	"github.com/kirves/go-form-it/common"
 )
 
+// Submit button type
 type SubmitButtonType struct {
 	Field
 }
 
+// Reset button type
 type ResetButtonType struct {
 	Field
 }
 
+// SubmitButton creates a default button with the provided name and text.
 func SubmitButton(name string, text string) *SubmitButtonType {
 	ret := &SubmitButtonType{
 		FieldWithType(name, formcommon.SUBMIT),
@@ -20,10 +23,7 @@ func SubmitButton(name string, text string) *SubmitButtonType {
 	return ret
 }
 
-// func (b *SubmitButtonType) SetStyle(style string) {
-// 	b.widget = widgets.Button(style)
-// }
-
+// ResetButton creates a default reset button with the provided name and text.
 func ResetButton(name string, text string) *ResetButtonType {
 	ret := &ResetButtonType{
 		FieldWithType(name, formcommon.RESET),
@@ -31,7 +31,3 @@ func ResetButton(name string, text string) *ResetButtonType {
 	ret.SetText(text)
 	return ret
 }
-
-// func (b *ResetButtonType) SetStyle(style string) {
-// 	b.widget = widgets.Button(style)
-// }

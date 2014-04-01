@@ -7,10 +7,13 @@ import (
 	"reflect"
 )
 
+// FormElement interface defines a form object (usually a Field or a FieldSet) that can be rendered as a template.HTML object.
 type FormElement interface {
 	Render() template.HTML
 }
 
+// Render executes the internal template and renders the form, returning the result as a template.HTML object embeddable
+// in any other template.
 func (f *Form) Render() template.HTML {
 	var s string
 	buf := bytes.NewBufferString(s)
@@ -30,6 +33,7 @@ func (f *Form) Render() template.HTML {
 	return template.HTML(buf.String())
 }
 
+// Elements adds the provided elements to the form.
 func (f *Form) Elements(elems ...FormElement) *Form {
 	for _, e := range elems {
 		t := reflect.TypeOf(e)
@@ -59,7 +63,8 @@ func (f *Form) addFieldSet(fs *FieldSetType) *Form {
 	return f
 }
 
-func (f *Form) RemoveField(name string) *Form {
+// RemoveElement removes an element (identified by name) from the Form.
+func (f *Form) RemoveElement(name string) *Form {
 	ind, ok := f.fieldMap[name]
 	if !ok {
 		return f
@@ -69,11 +74,13 @@ func (f *Form) RemoveField(name string) *Form {
 	return f
 }
 
+// AddClass associates the provided class to the Form.
 func (f *Form) AddClass(class string) *Form {
 	f.class = append(f.class, class)
 	return f
 }
 
+// RemoveClass removes the given class (if present) from the Form.
 func (f *Form) RemoveClass(class string) *Form {
 	ind := -1
 	for i, v := range f.class {
@@ -89,26 +96,31 @@ func (f *Form) RemoveClass(class string) *Form {
 	return f
 }
 
+// SetId set the given id to the form.
 func (f *Form) SetId(id string) *Form {
 	f.id = id
 	return f
 }
 
+// SetParam adds the given key-value pair to form parameters list.
 func (f *Form) SetParam(key, value string) *Form {
 	f.params[key] = value
 	return f
 }
 
+// DeleteParm removes the parameter identified by key from form parameters list.
 func (f *Form) DeleteParam(key string) *Form {
 	delete(f.params, key)
 	return f
 }
 
+// AddCss add a CSS value (in the form of option-value - e.g.: border - auto) to the form.
 func (f *Form) AddCss(key, value string) *Form {
 	f.css[key] = value
 	return f
 }
 
+// RemoveCss removes CSS style from the form.
 func (f *Form) RemoveCss(key string) *Form {
 	delete(f.css, key)
 	return f

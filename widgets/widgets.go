@@ -1,3 +1,6 @@
+// This package contains the base logic for the creation and rendering of field widgets. Base widgets are defined for most input fields,
+// both in classic and Bootstrap3 style; custom widgets can be defined and associated to a field, provided that they implement the
+// WidgetInterface interface.
 package widgets
 
 import (
@@ -7,21 +10,25 @@ import (
 	"html/template"
 )
 
+// Simple widget object that gets executed at render time.
 type Widget struct {
-	Template *template.Template
+	template *template.Template
 }
 
+// WidgetInterface defines the requirements for custom widgets.
 type WidgetInterface interface {
 	Render(data interface{}) string
 }
 
+// Render executes the internal template and returns the result as a template.HTML object.
 func (w *Widget) Render(data interface{}) string {
 	var s string
 	buf := bytes.NewBufferString(s)
-	w.Template.ExecuteTemplate(buf, "main", data)
+	w.template.ExecuteTemplate(buf, "main", data)
 	return buf.String()
 }
 
+// BaseWidget creates a Widget based on style and inpuType parameters, both defined in the common package.
 func BaseWidget(style, inputType string) *Widget {
 	var urls []string = []string{"templates/%s/generic.tmpl"}
 	switch inputType {
@@ -76,14 +83,6 @@ func BaseWidget(style, inputType string) *Widget {
 		styledUrls[i] = fmt.Sprintf(urls[i], style)
 	}
 	templ, err := template.ParseFiles(styledUrls...)
-	if err != nil {
-		panic(err)
-	}
-	return &Widget{templ}
-}
-
-func GenericWidget(style string) *Widget {
-	templ, err := template.ParseFiles(fmt.Sprintf("templates/%s/input.html", style))
 	if err != nil {
 		panic(err)
 	}

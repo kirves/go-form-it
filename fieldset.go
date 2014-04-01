@@ -7,6 +7,7 @@ import (
 	"html/template"
 )
 
+// FieldSetType is a collection of fields grouped within a form.
 type FieldSetType struct {
 	name   string
 	class  map[string]struct{}
@@ -14,6 +15,7 @@ type FieldSetType struct {
 	fields []fields.FieldInterface
 }
 
+// Render translates a FieldSetType into HTML code and returns it as a template.HTML object.
 func (f *FieldSetType) Render() template.HTML {
 	var s string
 	buf := bytes.NewBufferString(s)
@@ -30,6 +32,8 @@ func (f *FieldSetType) Render() template.HTML {
 	return template.HTML(buf.String())
 }
 
+// FieldSet creates and returns a new FieldSetType with the given name and list of fields.
+// Every method for FieldSetType objects returns the object itself, so that call can be chained.
 func FieldSet(name string, elems ...fields.FieldInterface) *FieldSetType {
 	return &FieldSetType{
 		name,
@@ -39,35 +43,42 @@ func FieldSet(name string, elems ...fields.FieldInterface) *FieldSetType {
 	}
 }
 
+// Name returns the name of the fieldset.
 func (f *FieldSetType) Name() string {
 	return f.name
 }
 
+// AddClass saves the provided class for the fieldset.
 func (f *FieldSetType) AddClass(class string) *FieldSetType {
 	f.class[class] = struct{}{}
 	return f
 }
 
+// RemoveClass removes the provided class from the fieldset, if it was present. Nothing is done if it was not originally present.
 func (f *FieldSetType) RemoveClass(class string) *FieldSetType {
 	delete(f.class, class)
 	return f
 }
 
+// AddTag adds a no-value parameter (e.g.: "disabled", "checked") to the fieldset.
 func (f *FieldSetType) AddTag(tag string) *FieldSetType {
 	f.tags[tag] = struct{}{}
 	return f
 }
 
+// RemoveTag removes a tag from the fieldset, if it was present.
 func (f *FieldSetType) RemoveTag(tag string) *FieldSetType {
 	delete(f.tags, tag)
 	return f
 }
 
+// Disable adds tag "disabled" to the fieldset, making it unresponsive in some environment (e.g.: Bootstrap).
 func (f *FieldSetType) Disable() *FieldSetType {
 	f.AddTag("disabled")
 	return f
 }
 
+// Enable removes tag "disabled" from the fieldset, making it responsive.
 func (f *FieldSetType) Enable() *FieldSetType {
 	f.RemoveTag("disabled")
 	return f

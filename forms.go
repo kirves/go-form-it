@@ -1,3 +1,7 @@
+// This package provides form creation and rendering functionalities, as well as FieldSet definition.
+// Two kind of forms can be created: base forms and Bootstrap3 compatible forms; even though the latters are automatically provided
+// the required classes to make them render correctly in a Bootstrap environment, every form can be given custom parameters such as
+// classes, id, generic parameters (in key-value form) and stylesheet options.
 package forms
 
 import (
@@ -8,11 +12,13 @@ import (
 	"strings"
 )
 
+// Form methods: POST or GET.
 const (
 	POST = "POST"
 	GET  = "GET"
 )
 
+// Form structure.
 type Form struct {
 	fields   []FormElement
 	fieldMap map[string]int
@@ -26,6 +32,7 @@ type Form struct {
 	action   string
 }
 
+// BaseForm creates an empty form with no styling.
 func BaseForm(method, action string) *Form {
 	tmpl, err := template.ParseFiles("templates/baseform.html")
 	if err != nil {
@@ -45,6 +52,7 @@ func BaseForm(method, action string) *Form {
 	}
 }
 
+// BootstrapForm creates an empty form compliant with Bootstrap3 CSS, both in structure and classes.
 func BootstrapForm(method, action string) *Form {
 	tmpl, err := template.ParseFiles("templates/bootstrapform.html")
 	if err != nil {
@@ -64,6 +72,11 @@ func BootstrapForm(method, action string) *Form {
 	}
 }
 
+// BaseFormFromModel returns a base form inferring fields, data types and contents from the provided instance.
+// A Submit button is automatically added as a last field; the form is editable and fields can be added, modified or removed as needed.
+// Tags can be used to drive automatic creation: change default widgets for each field, skip fields or provide additional parameters.
+// Basic field -> widget mapping is as follows: string -> textField, bool -> checkbox, time.Time -> datetimeField, int -> numberField;
+// nested structs are also converted and added to the form.
 func BaseFormFromModel(m interface{}, method, action string) *Form {
 	form := BaseForm(method, action)
 	for _, v := range unWindStructure(m, "") {
@@ -73,6 +86,7 @@ func BaseFormFromModel(m interface{}, method, action string) *Form {
 	return form
 }
 
+// Same as BaseFormFromModel but returns a Bootstrap3 compatible form.
 func BootstrapFormFromModel(m interface{}, method, action string) *Form {
 	form := BootstrapForm(method, action)
 	for _, v := range unWindStructure(m, "") {
