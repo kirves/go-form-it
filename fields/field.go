@@ -1,7 +1,7 @@
 package fields
 
 import (
-	"github.com/kirves/revel-forms/widgets"
+	"github.com/kirves/go-form-it/widgets"
 	"html/template"
 )
 

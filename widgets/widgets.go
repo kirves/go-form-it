@@ -3,7 +3,7 @@ package widgets
 import (
 	"bytes"
 	"fmt"
-	"github.com/kirves/revel-forms/common"
+	"github.com/kirves/go-form-it/common"
 	"html/template"
 )
 

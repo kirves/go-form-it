@@ -3,7 +3,7 @@ package forms
 import (
 	"bytes"
 	"fmt"
-	"github.com/kirves/revel-forms/fields"
+	"github.com/kirves/go-form-it/fields"
 	"html/template"
 )
 

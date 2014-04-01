@@ -2,7 +2,7 @@ package fields
 
 import (
 	"fmt"
-	"github.com/kirves/revel-forms/common"
+	"github.com/kirves/go-form-it/common"
 	"reflect"
 )
 

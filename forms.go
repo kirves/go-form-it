@@ -1,8 +1,8 @@
 package forms
 
 import (
-	"github.com/kirves/revel-forms/common"
-	"github.com/kirves/revel-forms/fields"
+	"github.com/kirves/go-form-it/common"
+	"github.com/kirves/go-form-it/fields"
 	"html/template"
 	"reflect"
 	"strings"

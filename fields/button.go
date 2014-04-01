@@ -1,7 +1,7 @@
 package fields
 
 import (
-	"github.com/kirves/revel-forms/common"
+	"github.com/kirves/go-form-it/common"
 )
 
 type SubmitButtonType struct {
