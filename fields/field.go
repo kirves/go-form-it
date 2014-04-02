@@ -21,6 +21,8 @@ type Field struct {
 	labelClass []string
 	tag        []string
 	value      string
+	helptext   string
+	errors     []string
 }
 
 // FieldInterface defines the interface an object must implement to be used in a form. Every method returns a FieldInterface object
@@ -46,6 +48,8 @@ type FieldInterface interface {
 	SetValue(value string) FieldInterface
 	Disabled() FieldInterface
 	Enabled() FieldInterface
+	SetHelptext(text string) FieldInterface
+	AddError(err string) FieldInterface
 }
 
 // FieldWithType creates an empty field of the given type and identified by name.
@@ -64,6 +68,8 @@ func FieldWithType(name, t string) Field {
 		[]string{},
 		[]string{},
 		"",
+		"",
+		[]string{},
 	}
 }
 
@@ -94,6 +100,8 @@ func (f *Field) Render() template.HTML {
 			"labelClasses": f.labelClass,
 			"tags":         f.tag,
 			"value":        f.value,
+			"helptext":     f.helptext,
+			"errors":       f.errors,
 		}
 		return template.HTML(f.Widget.Render(data))
 	}
@@ -231,5 +239,17 @@ func (f *Field) RemoveTag(tag string) FieldInterface {
 // SetValue sets the value parameter for the field.
 func (f *Field) SetValue(value string) FieldInterface {
 	f.value = value
+	return f
+}
+
+// SetHelptext saves the field helptext.
+func (f *Field) SetHelptext(text string) FieldInterface {
+	f.helptext = text
+	return f
+}
+
+// AddError adds an error string to the field. It's valid only for Bootstrap forms.
+func (f *Field) AddError(err string) FieldInterface {
+	f.errors = append(f.errors, err)
 	return f
 }
