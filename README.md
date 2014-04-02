@@ -277,7 +277,7 @@ Buttons
 
 Buttons can be created calling either the `Button`, `SubmitButton` or `ResetButton` constructor methods and providing a text identifier and the content of the button itself.
 
-	btn0 := fields.Button("btn", "Clik me!")
+	btn0 := fields.Button("btn", "Click me!")
 
 
 License
