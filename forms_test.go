@@ -81,6 +81,20 @@ func TestFormRender(t *testing.T) {
 	t.Log("Rendered form:", form.Render())
 }
 
+func TestFormFromSimpleModel(t *testing.T) {
+	type User struct {
+		Username  string
+		Password1 string `form_widget:"password" form_label:"Password 1"`
+		Password2 string `form_widget:"password" form_label:"Password 2"`
+		SkipThis  int    `form_options:"skip"`
+	}
+
+	u := User{}
+
+	form := BaseFormFromModel(u, POST, "/action.html")
+	t.Log("Rendered form:", form.Render())
+}
+
 func TestFormFromModel(t *testing.T) {
 	type Model struct {
 		User      string    `form_label:"User label test"`
@@ -110,12 +124,13 @@ func TestBSFormFromModel(t *testing.T) {
 }
 
 func TestInlineCreation(t *testing.T) {
-	form := BootstrapForm(POST, "").Elements(
-		fields.TextField("test").AddClass("test").AddClass("class").SetId("testId").SetParam("param1", "val1").AddCss("css1", "val1"),
-		FieldSet("FS1",
-			fields.PasswordField("test"),
-		).Disable(),
-		fields.SubmitButton("btn", "Click me!"),
+	form := BaseForm(POST, "/action.html").Elements(
+		fields.TextField("text_field").SetLabel("Username"),
+		FieldSet("psw_fieldset",
+			fields.PasswordField("psw1").AddClass("password_class").SetLabel("Password 1"),
+			fields.PasswordField("psw2").AddClass("password_class").SetLabel("Password 2"),
+		),
+		fields.SubmitButton("btn1", "Submit"),
 	)
 	t.Log("Rendered form:", form.Render())
 }
