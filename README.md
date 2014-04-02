@@ -203,6 +203,8 @@ See the [documentation](http://godoc.org/github.com/kirves/go-form-it) for detai
 
 Most of the field widgets have already been created and integrate with Bootstrap. It is possible, however, to define custom widgets to render fields by simply assigning an object implementing the widgets.WidgetInterface to the Widget field.
 
+Also, error messages can be added to fields via the `AddError(err)` method: in a Bootstrap environment they will be correctly rendered.
+
 Text fields
 -----------
 
