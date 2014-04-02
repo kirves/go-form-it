@@ -125,3 +125,12 @@ func (f *Form) RemoveCss(key string) *Form {
 	delete(f.css, key)
 	return f
 }
+
+// Field returns the field identified by name. It returns an empty field if it is missing.
+func (f *Form) Field(name string) fields.FieldInterface {
+	ind, ok := f.fieldMap[name]
+	if !ok || !reflect.TypeOf(f.fields[ind]).Implements(reflect.TypeOf((*fields.FieldInterface)(nil)).Elem()) {
+		return &fields.Field{}
+	}
+	return f.fields[ind].(fields.FieldInterface)
+}
