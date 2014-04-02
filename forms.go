@@ -29,7 +29,7 @@ type Form struct {
 	params   map[string]string
 	css      map[string]string
 	method   string
-	action   string
+	action   template.HTML
 }
 
 // BaseForm creates an empty form with no styling.
@@ -48,7 +48,7 @@ func BaseForm(method, action string) *Form {
 		map[string]string{},
 		map[string]string{},
 		method,
-		action,
+		template.HTML(action),
 	}
 }
 
@@ -68,7 +68,7 @@ func BootstrapForm(method, action string) *Form {
 		map[string]string{},
 		map[string]string{},
 		method,
-		action,
+		template.HTML(action),
 	}
 }
 
