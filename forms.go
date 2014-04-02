@@ -34,7 +34,7 @@ type Form struct {
 
 // BaseForm creates an empty form with no styling.
 func BaseForm(method, action string) *Form {
-	tmpl, err := template.ParseFiles("github.com/kirves/go-form-it/templates/baseform.html")
+	tmpl, err := template.ParseFiles(formcommon.CreateUrl("templates/baseform.html"))
 	if err != nil {
 		panic(err)
 	}
@@ -54,7 +54,7 @@ func BaseForm(method, action string) *Form {
 
 // BootstrapForm creates an empty form compliant with Bootstrap3 CSS, both in structure and classes.
 func BootstrapForm(method, action string) *Form {
-	tmpl, err := template.ParseFiles("github.com/kirves/go-form-it/templates/bootstrapform.html")
+	tmpl, err := template.ParseFiles(formcommon.CreateUrl("templates/baseform.html"))
 	if err != nil {
 		panic(err)
 	}

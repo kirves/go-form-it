@@ -30,40 +30,40 @@ func (w *Widget) Render(data interface{}) string {
 
 // BaseWidget creates a Widget based on style and inpuType parameters, both defined in the common package.
 func BaseWidget(style, inputType string) *Widget {
-	var urls []string = []string{"templates/%s/generic.tmpl"}
+	var urls []string = []string{formcommon.CreateUrl("templates/%s/generic.tmpl")}
 	switch inputType {
 	case formcommon.BUTTON:
-		urls = append(urls, "templates/%s/button.html")
+		urls = append(urls, formcommon.CreateUrl("templates/%s/button.html"))
 	case formcommon.CHECKBOX:
-		urls = append(urls, "templates/%s/options/checkbox.html")
+		urls = append(urls, formcommon.CreateUrl("templates/%s/options/checkbox.html"))
 	case formcommon.TEXTAREA:
-		urls = append(urls, "templates/%s/text/textareainput.html")
+		urls = append(urls, formcommon.CreateUrl("templates/%s/text/textareainput.html"))
 	case formcommon.SELECT:
-		urls = append(urls, "templates/%s/options/select.html")
+		urls = append(urls, formcommon.CreateUrl("templates/%s/options/select.html"))
 	case formcommon.PASSWORD:
-		urls = append(urls, "templates/%s/text/passwordinput.html")
+		urls = append(urls, formcommon.CreateUrl("templates/%s/text/passwordinput.html"))
 	case formcommon.RADIO:
-		urls = append(urls, "templates/%s/options/radiobutton.html")
+		urls = append(urls, formcommon.CreateUrl("templates/%s/options/radiobutton.html"))
 	case formcommon.TEXT:
-		urls = append(urls, "templates/%s/text/textinput.html")
+		urls = append(urls, formcommon.CreateUrl("templates/%s/text/textinput.html"))
 	case formcommon.RANGE:
-		urls = append(urls, "templates/%s/number/range.html")
+		urls = append(urls, formcommon.CreateUrl("templates/%s/number/range.html"))
 	case formcommon.NUMBER:
-		urls = append(urls, "templates/%s/number/number.html")
+		urls = append(urls, formcommon.CreateUrl("templates/%s/number/number.html"))
 	case formcommon.RESET:
-		urls = append(urls, "templates/%s/button.html")
+		urls = append(urls, formcommon.CreateUrl("templates/%s/button.html"))
 	case formcommon.SUBMIT:
-		urls = append(urls, "templates/%s/button.html")
+		urls = append(urls, formcommon.CreateUrl("templates/%s/button.html"))
 	case formcommon.DATE:
-		urls = append(urls, "templates/%s/datetime/date.html")
+		urls = append(urls, formcommon.CreateUrl("templates/%s/datetime/date.html"))
 	case formcommon.DATETIME:
-		urls = append(urls, "templates/%s/datetime/datetime.html")
+		urls = append(urls, formcommon.CreateUrl("templates/%s/datetime/datetime.html"))
 	case formcommon.TIME:
-		urls = append(urls, "templates/%s/datetime/time.html")
+		urls = append(urls, formcommon.CreateUrl("templates/%s/datetime/time.html"))
 	case formcommon.DATETIME_LOCAL:
-		urls = append(urls, "templates/%s/datetime/datetime.html")
+		urls = append(urls, formcommon.CreateUrl("templates/%s/datetime/datetime.html"))
 	case formcommon.STATIC:
-		urls = append(urls, "templates/%s/static.html")
+		urls = append(urls, formcommon.CreateUrl("templates/%s/static.html"))
 	case formcommon.SEARCH,
 		formcommon.TEL,
 		formcommon.URL,
@@ -74,9 +74,9 @@ func BaseWidget(style, inputType string) *Widget {
 		formcommon.HIDDEN,
 		formcommon.IMAGE,
 		formcommon.MONTH:
-		urls = append(urls, "templates/%s/input.html")
+		urls = append(urls, formcommon.CreateUrl("templates/%s/input.html"))
 	default:
-		urls = append(urls, "templates/%s/input.html")
+		urls = append(urls, formcommon.CreateUrl("templates/%s/input.html"))
 	}
 	styledUrls := make([]string, len(urls))
 	for i := range urls {

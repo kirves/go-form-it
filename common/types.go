@@ -1,6 +1,15 @@
 // This package provides basic constants used by go-form-it packages.
 package formcommon
 
+import (
+	"os"
+	"path"
+)
+
+const (
+	PACKAGE_NAME = "github.com/kirves/go-form-it"
+)
+
 // Input field types
 const (
 	BUTTON         = "button"
@@ -36,3 +45,11 @@ const (
 	BASE      = "base"
 	BOOTSTRAP = "bootstrap3"
 )
+
+// CreateUrl creates the complete url of the desired widget template
+func CreateUrl(widget string) string {
+	if _, err := os.Stat(widget); os.IsNotExist(err) {
+		return path.Join(os.Getenv("GOPATH"), "src", PACKAGE_NAME, widget)
+	}
+	return widget
+}
