@@ -1,8 +1,8 @@
-{{ define "main"}}{{ $p := . }}{{ range $k, $v := .choices }}{{ range $v }}
+{{ define "main"}}{{ $p := . }}{{ range .choices }}
 <div class="radio">
-<label class="control-label {{ if .labelClasses }}{{range .labelClasses}} {{.}}{{end}}{{end}}">
+<label class="control-label {{ if $p.labelClasses }}{{range $p.labelClasses}} {{.}}{{end}}{{end}}">
 	<input type="radio" name="{{$p.name}}"{{ if $p.classes }} class="{{range $p.classes}}{{.}} {{end}}"{{end}} id="{{.Id}}"{{if $p.params}}{{range $k2, $v2 := $p.params}} {{$k2}}="{{$v2}}"{{end}}{{end}}{{if $p.css}} style="{{range $k2, $v2 := .css}}{{$k2}}: {{$v2}}; {{end}}"{{end}}{{ if eq $p.value .Id}} checked{{end}}>
 	{{.Val}}
 </label>
 </div>
-{{end}}{{end}}{{end}}
+{{end}}{{end}}
