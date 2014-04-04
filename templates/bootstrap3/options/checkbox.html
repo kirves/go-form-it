@@ -1,6 +1,6 @@
 {{ define "main"}}<div class="checkbox{{if .errors}} has-error{{end}}">
 <label class="control-label {{ if .labelClasses }}{{range .labelClasses}} {{.}}{{end}}{{end}}">
-	<input type="checkbox" name="{{.name}}"{{ if .classes }} class="{{range .classes}}{{.}} {{end}}"{{end}}{{if .id}} id="{{.id}}"{{end}}{{if .params}}{{range $k, $v := .params}} {{$k}}="{{$v}}"{{end}}{{end}}{{if .css}} style="{{range $k, $v := .css}}{{$k}}: {{$v}}; {{end}}"{{end}}{{range .tags}} {{.}}{{end}}>
+	<input type="checkbox" name="{{.name}}"{{ if .classes }} class="{{range .classes}}{{.}} {{end}}"{{end}}{{if .id}} id="{{.id}}"{{end}}{{if .params}}{{range $k, $v := .params}} {{$k}}="{{$v}}"{{end}}{{end}}{{if .css}} style="{{range $k, $v := .css}}{{$k}}: {{$v}}; {{end}}"{{end}}{{range $k,$v := .tags}} {{$k}}{{end}}>
 	{{.label}}
 </label>
 {{if or .helptext .errors }}<span class="help-block">{{if .helptext}}{{ .helptext }}{{end}}
