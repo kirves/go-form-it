@@ -31,6 +31,7 @@ func TestPasswordRender(t *testing.T) {
 	field.AddClass("class")
 	field.SetId("testId")
 	field.SetStyle(style)
+	field.SetValue("asd")
 	t.Log("Rendered field:", field.Render())
 	psw = field
 }
@@ -58,7 +59,8 @@ func TestSelectRender(t *testing.T) {
 			fields.InputChoice{"choice2", "value2"},
 		},
 	})
-	field.SetStyle(style)
+	field.MultipleChoice().AddSelected("choice1", "choice2")
+	field.SetStyle(style).SetValue("choice1")
 	t.Log("Rendered select:", field.Render())
 }
 
