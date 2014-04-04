@@ -15,9 +15,7 @@ type Field struct {
 	id         string
 	params     map[string]string
 	css        map[string]string
-	text       string
 	label      string
-	choices    map[string][]InputChoice
 	labelClass []string
 	tag        map[string]struct{}
 	value      string
@@ -41,11 +39,9 @@ type FieldInterface interface {
 	AddCss(key, value string) FieldInterface
 	RemoveCss(key string) FieldInterface
 	SetStyle(style string) FieldInterface
-	SetText(text string) FieldInterface
 	SetLabel(label string) FieldInterface
 	AddLabelClass(class string) FieldInterface
 	RemoveLabelClass(class string) FieldInterface
-	SetChoices(choices map[string][]InputChoice) FieldInterface
 	SetValue(value string) FieldInterface
 	Disabled() FieldInterface
 	Enabled() FieldInterface
@@ -63,9 +59,7 @@ func FieldWithType(name, t string) Field {
 		id:         "",
 		params:     map[string]string{},
 		css:        map[string]string{},
-		text:       "",
 		label:      "",
-		choices:    map[string][]InputChoice{},
 		labelClass: []string{},
 		tag:        map[string]struct{}{},
 		value:      "",
@@ -86,26 +80,27 @@ func (f *Field) Name() string {
 	return f.name
 }
 
+func (f *Field) dataForRender() map[string]interface{} {
+	return map[string]interface{}{
+		"classes":      f.class,
+		"id":           f.id,
+		"name":         f.name,
+		"params":       f.params,
+		"css":          f.css,
+		"type":         f.fieldType,
+		"label":        f.label,
+		"labelClasses": f.labelClass,
+		"tags":         f.tag,
+		"value":        f.value,
+		"helptext":     f.helptext,
+		"errors":       f.errors,
+	}
+}
+
 // Render packs all data and executes widget render method.
 func (f *Field) Render() template.HTML {
 	if f.Widget != nil {
-		data := map[string]interface{}{
-			"classes":      f.class,
-			"id":           f.id,
-			"name":         f.name,
-			"params":       f.params,
-			"css":          f.css,
-			"text":         f.text,
-			"type":         f.fieldType,
-			"label":        f.label,
-			"choices":      f.choices,
-			"labelClasses": f.labelClass,
-			"tags":         f.tag,
-			"value":        f.value,
-			"helptext":     f.helptext,
-			"errors":       f.errors,
-			"multValues":   f.multValues,
-		}
+		data := f.dataForRender()
 		return template.HTML(f.Widget.Render(data))
 	}
 	return template.HTML("")
@@ -139,12 +134,6 @@ func (f *Field) SetId(id string) FieldInterface {
 	return f
 }
 
-// SetText saves the provided text as content of the field, usually a TextAreaField.
-func (f *Field) SetText(text string) FieldInterface {
-	f.text = text
-	return f
-}
-
 // SetLabel saves the label to be rendered along with the field.
 func (f *Field) SetLabel(label string) FieldInterface {
 	f.label = label
@@ -170,14 +159,6 @@ func (f *Field) RemoveLabelClass(class string) FieldInterface {
 	if ind != -1 {
 		f.labelClass = append(f.labelClass[:ind], f.labelClass[ind+1:]...)
 	}
-	return f
-}
-
-// SetChoices takes as input a dictionary whose key-value entries are defined as follows: key is the group name (the empty string
-// is the default group that is not explicitly rendered) and value is the list of choices belonging to that group.
-// Grouping is only useful for Select fields, while groups are ignored in Radio fields.
-func (f *Field) SetChoices(choices map[string][]InputChoice) FieldInterface {
-	f.choices = choices
 	return f
 }
 

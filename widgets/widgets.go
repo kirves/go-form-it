@@ -82,9 +82,6 @@ func BaseWidget(style, inputType string) *Widget {
 	for i := range urls {
 		styledUrls[i] = fmt.Sprintf(urls[i], style)
 	}
-	templ, err := template.ParseFiles(styledUrls...)
-	if err != nil {
-		panic(err)
-	}
+	templ := template.Must(template.ParseFiles(styledUrls...))
 	return &Widget{templ}
 }

@@ -3,6 +3,7 @@ package fields
 import (
 	"fmt"
 	"github.com/kirves/go-form-it/common"
+	"html/template"
 	"reflect"
 	"strings"
 )
@@ -15,11 +16,14 @@ type InputChoice struct {
 // Radio button type.
 type RadioType struct {
 	Field
+	choices []InputChoice
 }
 
 // Select field type.
 type SelectType struct {
 	Field
+	choices    map[string][]InputChoice
+	multValues map[string]struct{}
 }
 
 // Checkbox field type.
@@ -27,38 +31,34 @@ type CheckBoxType struct {
 	Field
 }
 
+// =============== RADIO
+
 // RadioField creates a default radio button input field with the provided name and list of choices.
 func RadioField(name string, choices []InputChoice) *RadioType {
 	ret := &RadioType{
 		FieldWithType(name, formcommon.RADIO),
-	}
-	chMap := map[string][]InputChoice{
-		"": choices,
-	}
-	ret.SetChoices(chMap)
-	return ret
-}
-
-// SelectField creates a default select input field with the provided name and map of choices. Choices for SelectField are grouped
-// by name (if <optgroup> is needed); "" group is the default one and does not trigger a <optgroup></optgroup> rendering.
-func SelectField(name string, choices map[string][]InputChoice) *SelectType {
-	ret := &SelectType{
-		FieldWithType(name, formcommon.SELECT),
+		[]InputChoice{},
 	}
 	ret.SetChoices(choices)
 	return ret
 }
 
-// Checkbox creates a default checkbox field with the provided name. It also makes it checked by default based
-// on the checked parameter.
-func Checkbox(name string, checked bool) *CheckBoxType {
-	ret := &CheckBoxType{
-		FieldWithType(name, formcommon.CHECKBOX),
+// SetChoices takes as input a dictionary whose key-value entries are defined as follows: key is the group name (the empty string
+// is the default group that is not explicitly rendered) and value is the list of choices belonging to that group.
+// Grouping is only useful for Select fields, while groups are ignored in Radio fields.
+func (f *RadioType) SetChoices(choices []InputChoice) *RadioType {
+	f.choices = choices
+	return f
+}
+
+// Render packs all data and executes widget render method.
+func (f *RadioType) Render() template.HTML {
+	if f.Widget != nil {
+		data := f.dataForRender()
+		data["choices"] = f.choices
+		return template.HTML(f.Widget.Render(data))
 	}
-	if checked {
-		ret.AddTag("checked")
-	}
-	return ret
+	return template.HTML("")
 }
 
 // RadioFieldFromInstance creates and initializes a radio field based on its name, the reference object instance and field number.
@@ -86,6 +86,65 @@ func RadioFieldFromInstance(i interface{}, fieldNo int, name string) *RadioType 
 	return ret
 }
 
+// ================ SELECT
+
+// SelectField creates a default select input field with the provided name and map of choices. Choices for SelectField are grouped
+// by name (if <optgroup> is needed); "" group is the default one and does not trigger a <optgroup></optgroup> rendering.
+func SelectField(name string, choices map[string][]InputChoice) *SelectType {
+	ret := &SelectType{
+		FieldWithType(name, formcommon.SELECT),
+		map[string][]InputChoice{},
+		map[string]struct{}{},
+	}
+	ret.SetChoices(choices)
+	return ret
+}
+
+// MultipleChoice configures the SelectField to accept and display multiple choices.
+func (sf *SelectType) MultipleChoice() *SelectType {
+	sf.AddTag("multiple")
+	return sf
+}
+
+// SingleChoice configures the SelectField to accept and display only one choice.
+func (sf *SelectType) SingleChoice() *SelectType {
+	sf.RemoveTag("multiple")
+	return sf
+}
+
+// If the SelectField is configured as "multiple", AddSelected adds a selected value to the field.
+func (sf *SelectType) AddSelected(opt ...string) *SelectType {
+	for _, v := range opt {
+		sf.multValues[v] = struct{}{}
+	}
+	return sf
+}
+
+// If the SelectField is configured as "multiple", AddSelected removes the selected value from the field.
+func (sf *SelectType) RemoveSelected(opt string) *SelectType {
+	delete(sf.multValues, opt)
+	return sf
+}
+
+// SetChoices takes as input a dictionary whose key-value entries are defined as follows: key is the group name (the empty string
+// is the default group that is not explicitly rendered) and value is the list of choices belonging to that group.
+// Grouping is only useful for Select fields, while groups are ignored in Radio fields.
+func (f *SelectType) SetChoices(choices map[string][]InputChoice) *SelectType {
+	f.choices = choices
+	return f
+}
+
+// Render packs all data and executes widget render method.
+func (f *SelectType) Render() template.HTML {
+	if f.Widget != nil {
+		data := f.dataForRender()
+		data["choices"] = f.choices
+		data["multValues"] = f.multValues
+		return template.HTML(f.Widget.Render(data))
+	}
+	return template.HTML("")
+}
+
 // SelectFieldFromInstance creates and initializes a select field based on its name, the reference object instance and field number.
 // This method looks for "form_choices" and "form_value" tags to add additional parameters to the field. "form_choices" tag is a list
 // of <group<|<id>|<value> options, joined by "|" character; ex: "G1|A|Option A|G1|B|Option B" translates into 2 options in the same group G1:
@@ -111,6 +170,20 @@ func SelectFieldFromInstance(i interface{}, fieldNo int, name string) *SelectTyp
 	}
 	if _, ok := chMap[v]; ok {
 		ret.SetValue(v)
+	}
+	return ret
+}
+
+// ================== CHECKBOX
+
+// Checkbox creates a default checkbox field with the provided name. It also makes it checked by default based
+// on the checked parameter.
+func Checkbox(name string, checked bool) *CheckBoxType {
+	ret := &CheckBoxType{
+		FieldWithType(name, formcommon.CHECKBOX),
+	}
+	if checked {
+		ret.AddTag("checked")
 	}
 	return ret
 }
