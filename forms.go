@@ -125,7 +125,7 @@ func unWindStructure(m interface{}, baseName string) []fields.FieldInterface {
 			case "password":
 				f = fields.PasswordFieldFromInstance(m, i, fName)
 			case "select":
-				f = fields.SelectFieldFromInstance(m, i, fName)
+				f = fields.SelectFieldFromInstance(m, i, fName, options)
 			case "date":
 				f = fields.DateFieldFromInstance(m, i, fName)
 			case "datetime":

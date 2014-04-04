@@ -150,7 +150,7 @@ func (f *SelectType) Render() template.HTML {
 // of <group<|<id>|<value> options, joined by "|" character; ex: "G1|A|Option A|G1|B|Option B" translates into 2 options in the same group G1:
 // <A, Option A> and <B, Option B>. "" group is the default one.
 // It also uses i object's [fieldNo]-th field content (if any) to override the "form_value" option and fill the HTML field.
-func SelectFieldFromInstance(i interface{}, fieldNo int, name string) *SelectType {
+func SelectFieldFromInstance(i interface{}, fieldNo int, name string, options map[string]struct{}) *SelectType {
 	t := reflect.TypeOf(i).Field(fieldNo).Tag
 	choices := strings.Split(t.Get("form_choices"), "|")
 	chArr := make(map[string][]InputChoice)
@@ -164,8 +164,13 @@ func SelectFieldFromInstance(i interface{}, fieldNo int, name string) *SelectTyp
 	}
 	ret := SelectField(name, chArr)
 
+	if _, ok := options["multiple"]; ok {
+		ret.MultipleChoice()
+	}
+
 	var v string = fmt.Sprintf("%s", reflect.ValueOf(i).Field(fieldNo).String())
 	if v == "" {
+		// TODO: multiple value parsing
 		v = t.Get("form_value")
 	}
 	if _, ok := chMap[v]; ok {
