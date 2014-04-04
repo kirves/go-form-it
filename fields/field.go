@@ -19,10 +19,11 @@ type Field struct {
 	label      string
 	choices    map[string][]InputChoice
 	labelClass []string
-	tag        []string
+	tag        map[string]struct{}
 	value      string
 	helptext   string
 	errors     []string
+	multValues map[string]struct{}
 }
 
 // FieldInterface defines the interface an object must implement to be used in a form. Every method returns a FieldInterface object
@@ -55,21 +56,22 @@ type FieldInterface interface {
 // FieldWithType creates an empty field of the given type and identified by name.
 func FieldWithType(name, t string) Field {
 	return Field{
-		t,
-		nil,
-		name,
-		[]string{},
-		"",
-		map[string]string{},
-		map[string]string{},
-		"",
-		"",
-		map[string][]InputChoice{},
-		[]string{},
-		[]string{},
-		"",
-		"",
-		[]string{},
+		fieldType:  t,
+		Widget:     nil,
+		name:       name,
+		class:      []string{},
+		id:         "",
+		params:     map[string]string{},
+		css:        map[string]string{},
+		text:       "",
+		label:      "",
+		choices:    map[string][]InputChoice{},
+		labelClass: []string{},
+		tag:        map[string]struct{}{},
+		value:      "",
+		helptext:   "",
+		errors:     []string{},
+		multValues: map[string]struct{}{},
 	}
 }
 
@@ -102,6 +104,7 @@ func (f *Field) Render() template.HTML {
 			"value":        f.value,
 			"helptext":     f.helptext,
 			"errors":       f.errors,
+			"multValues":   f.multValues,
 		}
 		return template.HTML(f.Widget.Render(data))
 	}
@@ -216,23 +219,13 @@ func (f *Field) Enabled() FieldInterface {
 
 // AddTag adds a no-value parameter (e.g.: checked, disabled) to the field.
 func (f *Field) AddTag(tag string) FieldInterface {
-	f.tag = append(f.tag, tag)
+	f.tag[tag] = struct{}{}
 	return f
 }
 
 // RemoveTag removes a no-value parameter from the field.
 func (f *Field) RemoveTag(tag string) FieldInterface {
-	ind := -1
-	for i, v := range f.tag {
-		if v == tag {
-			ind = i
-			break
-		}
-	}
-
-	if ind != -1 {
-		f.tag = append(f.tag[:ind], f.tag[ind+1:]...)
-	}
+	delete(f.tag, tag)
 	return f
 }
 
