@@ -148,6 +148,7 @@ Struct tags can be used to slightly modify automatic form creation. In particula
 * form_options: can contain the following keywords separated by comma
 	- skip: skip field, do not convert to HTML field
 	- checked: for Checkbox fields, check by default
+	- multiple: for select fields, allows multiple choices
 * form_widget: override custom widget with one of the following
 	- text
 	- textarea
@@ -208,7 +209,7 @@ Also, error messages can be added to fields via the `AddError(err)` method: in a
 Text fields
 -----------
 
-This category includes text, password, textarea and hidden fields. They are all instantatied by providing the name, except the TextAreaField which also requires a dimension in terms of rows and columns.
+This category includes text, password, textarea and hidden fields. They are all instantiated by providing the name, except the TextAreaField which also requires a dimension in terms of rows and columns.
 
 	f0 := fields.TextField("text")
 	f1 := fields.PasswordField("password")
@@ -242,6 +243,10 @@ Select fields, on the other hand, allow option grouping. This can be achieved by
 	}
 	f := fields.SelectField("select", opts)
 
+Select fields can allow multiple choices. To enable this option simply call the `MultipleChoice()` method on the field and provide the selected choices via `AddSelected(...string)`:
+
+	f.MultipleChoice()
+	f.AddSelected("A", "B")
 
 Number fields
 -------------
