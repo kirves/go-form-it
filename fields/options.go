@@ -89,12 +89,19 @@ func SelectField(name string, choices map[string][]InputChoice) *SelectType {
 // MultipleChoice configures the SelectField to accept and display multiple choices.
 func (sf *SelectType) MultipleChoice() *SelectType {
 	sf.AddTag("multiple")
+	// fix name if necessary
+	if !strings.HasSuffix(sf.name, "[]") {
+		sf.name = sf.name + "[]"
+	}
 	return sf
 }
 
 // SingleChoice configures the SelectField to accept and display only one choice.
 func (sf *SelectType) SingleChoice() *SelectType {
 	sf.RemoveTag("multiple")
+	if strings.HasSuffix(sf.name, "[]") {
+		sf.name = strings.TrimSuffix(sf.name, "[]")
+	}
 	return sf
 }
 
