@@ -3,7 +3,6 @@ package fields
 import (
 	"fmt"
 	"github.com/kirves/go-form-it/common"
-	"html/template"
 	"reflect"
 	"strings"
 )
@@ -16,14 +15,11 @@ type InputChoice struct {
 // Radio button type.
 type RadioType struct {
 	Field
-	choices []InputChoice
 }
 
 // Select field type.
 type SelectType struct {
 	Field
-	choices    map[string][]InputChoice
-	multValues map[string]struct{}
 }
 
 // Checkbox field type.
@@ -37,8 +33,8 @@ type CheckBoxType struct {
 func RadioField(name string, choices []InputChoice) *RadioType {
 	ret := &RadioType{
 		FieldWithType(name, formcommon.RADIO),
-		[]InputChoice{},
 	}
+	ret.additionalData["choices"] = []InputChoice{}
 	ret.SetChoices(choices)
 	return ret
 }
@@ -47,18 +43,8 @@ func RadioField(name string, choices []InputChoice) *RadioType {
 // is the default group that is not explicitly rendered) and value is the list of choices belonging to that group.
 // Grouping is only useful for Select fields, while groups are ignored in Radio fields.
 func (f *RadioType) SetChoices(choices []InputChoice) *RadioType {
-	f.choices = choices
+	f.additionalData["choices"] = choices
 	return f
-}
-
-// Render packs all data and executes widget render method.
-func (f *RadioType) Render() template.HTML {
-	if f.Widget != nil {
-		data := f.dataForRender()
-		data["choices"] = f.choices
-		return template.HTML(f.Widget.Render(data))
-	}
-	return template.HTML("")
 }
 
 // RadioFieldFromInstance creates and initializes a radio field based on its name, the reference object instance and field number.
@@ -93,9 +79,9 @@ func RadioFieldFromInstance(i interface{}, fieldNo int, name string) *RadioType 
 func SelectField(name string, choices map[string][]InputChoice) *SelectType {
 	ret := &SelectType{
 		FieldWithType(name, formcommon.SELECT),
-		map[string][]InputChoice{},
-		map[string]struct{}{},
 	}
+	ret.additionalData["choices"] = map[string][]InputChoice{}
+	ret.additionalData["multValues"] = map[string]struct{}{}
 	ret.SetChoices(choices)
 	return ret
 }
@@ -115,34 +101,23 @@ func (sf *SelectType) SingleChoice() *SelectType {
 // If the SelectField is configured as "multiple", AddSelected adds a selected value to the field.
 func (sf *SelectType) AddSelected(opt ...string) *SelectType {
 	for _, v := range opt {
-		sf.multValues[v] = struct{}{}
+		sf.additionalData["multValues"].(map[string]struct{})[v] = struct{}{}
 	}
 	return sf
 }
 
 // If the SelectField is configured as "multiple", AddSelected removes the selected value from the field.
 func (sf *SelectType) RemoveSelected(opt string) *SelectType {
-	delete(sf.multValues, opt)
+	delete(sf.additionalData["multValues"].(map[string]struct{}), opt)
 	return sf
 }
 
 // SetChoices takes as input a dictionary whose key-value entries are defined as follows: key is the group name (the empty string
 // is the default group that is not explicitly rendered) and value is the list of choices belonging to that group.
 // Grouping is only useful for Select fields, while groups are ignored in Radio fields.
-func (f *SelectType) SetChoices(choices map[string][]InputChoice) *SelectType {
-	f.choices = choices
-	return f
-}
-
-// Render packs all data and executes widget render method.
-func (f *SelectType) Render() template.HTML {
-	if f.Widget != nil {
-		data := f.dataForRender()
-		data["choices"] = f.choices
-		data["multValues"] = f.multValues
-		return template.HTML(f.Widget.Render(data))
-	}
-	return template.HTML("")
+func (sf *SelectType) SetChoices(choices map[string][]InputChoice) *SelectType {
+	sf.additionalData["choices"] = choices
+	return sf
 }
 
 // SelectFieldFromInstance creates and initializes a select field based on its name, the reference object instance and field number.

@@ -8,20 +8,20 @@ import (
 
 // Field is a generic type containing all data associated to an input field.
 type Field struct {
-	fieldType  string
-	Widget     widgets.WidgetInterface // Public Widget field for widget customization
-	name       string
-	class      []string
-	id         string
-	params     map[string]string
-	css        map[string]string
-	label      string
-	labelClass []string
-	tag        map[string]struct{}
-	value      string
-	helptext   string
-	errors     []string
-	multValues map[string]struct{}
+	fieldType      string
+	Widget         widgets.WidgetInterface // Public Widget field for widget customization
+	name           string
+	class          []string
+	id             string
+	params         map[string]string
+	css            map[string]string
+	label          string
+	labelClass     []string
+	tag            map[string]struct{}
+	value          string
+	helptext       string
+	errors         []string
+	additionalData map[string]interface{}
 }
 
 // FieldInterface defines the interface an object must implement to be used in a form. Every method returns a FieldInterface object
@@ -52,20 +52,20 @@ type FieldInterface interface {
 // FieldWithType creates an empty field of the given type and identified by name.
 func FieldWithType(name, t string) Field {
 	return Field{
-		fieldType:  t,
-		Widget:     nil,
-		name:       name,
-		class:      []string{},
-		id:         "",
-		params:     map[string]string{},
-		css:        map[string]string{},
-		label:      "",
-		labelClass: []string{},
-		tag:        map[string]struct{}{},
-		value:      "",
-		helptext:   "",
-		errors:     []string{},
-		multValues: map[string]struct{}{},
+		fieldType:      t,
+		Widget:         nil,
+		name:           name,
+		class:          []string{},
+		id:             "",
+		params:         map[string]string{},
+		css:            map[string]string{},
+		label:          "",
+		labelClass:     []string{},
+		tag:            map[string]struct{}{},
+		value:          "",
+		helptext:       "",
+		errors:         []string{},
+		additionalData: map[string]interface{}{},
 	}
 }
 
@@ -81,7 +81,7 @@ func (f *Field) Name() string {
 }
 
 func (f *Field) dataForRender() map[string]interface{} {
-	return map[string]interface{}{
+	data := map[string]interface{}{
 		"classes":      f.class,
 		"id":           f.id,
 		"name":         f.name,
@@ -95,6 +95,10 @@ func (f *Field) dataForRender() map[string]interface{} {
 		"helptext":     f.helptext,
 		"errors":       f.errors,
 	}
+	for k, v := range f.additionalData {
+		data[k] = v
+	}
+	return data
 }
 
 // Render packs all data and executes widget render method.

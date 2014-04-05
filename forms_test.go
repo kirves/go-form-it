@@ -58,8 +58,7 @@ func TestSelectRender(t *testing.T) {
 			fields.InputChoice{"choice1", "value1"},
 			fields.InputChoice{"choice2", "value2"},
 		},
-	})
-	field.MultipleChoice().AddSelected("choice1", "choice2")
+	}).MultipleChoice().AddSelected("choice1", "choice2").SetLabel("asd")
 	field.SetStyle(style).SetValue("choice1")
 	t.Log("Rendered select:", field.Render())
 }
@@ -135,5 +134,26 @@ func TestInlineCreation(t *testing.T) {
 		),
 		fields.SubmitButton("btn1", "Submit"),
 	)
+	t.Log("Rendered form:", form.Render())
+}
+
+func TestPizzaCreation(t *testing.T) {
+
+	type Ingredient struct {
+		IngredientId int    `db_key:"true" db_autoincrement:"true"`
+		Name         string `db_size:"30"`
+	}
+
+	type Pizza struct {
+		Id   int    `db_key:"true" db_autoincrement:"true"`
+		Name string `db_size:"30"`
+		// Ingredients []int
+		Price float32 `form_widget:"number" form_min:"0"`
+
+		// Transient
+		Ingrs []Ingredient `db_transient:"true" form_options:"skip"`
+	}
+
+	form := BootstrapFormFromModel(Pizza{}, POST, "")
 	t.Log("Rendered form:", form.Render())
 }

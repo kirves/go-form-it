@@ -3,7 +3,6 @@ package fields
 import (
 	"fmt"
 	"github.com/kirves/go-form-it/common"
-	"html/template"
 	"reflect"
 	"strconv"
 )
@@ -21,7 +20,6 @@ type PasswordFieldType struct {
 // Textarea field input type
 type TextAreaFieldType struct {
 	Field
-	text string
 }
 
 // Hidden field input type.
@@ -49,7 +47,6 @@ func PasswordField(name string) *PasswordFieldType {
 func TextAreaField(name string, rows, cols int) *TextAreaFieldType {
 	ret := &TextAreaFieldType{
 		FieldWithType(name, formcommon.TEXTAREA),
-		"",
 	}
 	ret.SetParam("rows", string(rows))
 	ret.SetParam("cols", string(cols))
@@ -58,17 +55,8 @@ func TextAreaField(name string, rows, cols int) *TextAreaFieldType {
 
 // SetText saves the provided text as content of the field, usually a TextAreaField.
 func (f *TextAreaFieldType) SetText(text string) *TextAreaFieldType {
-	f.text = text
+	f.additionalData["text"] = text
 	return f
-}
-
-func (f *TextAreaFieldType) Render() template.HTML {
-	if f.Widget != nil {
-		data := f.dataForRender()
-		data["text"] = f.text
-		return template.HTML(f.Widget.Render(data))
-	}
-	return template.HTML("")
 }
 
 // ========================
