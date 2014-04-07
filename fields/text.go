@@ -7,70 +7,56 @@ import (
 	"strconv"
 )
 
-// Text field input type.
-type TextFieldType struct {
-	Field
-}
+// // Text field input type.
+// type TextFieldType struct {
+// 	Field
+// }
 
-// Password field input type.
-type PasswordFieldType struct {
-	Field
-}
+// // Password field input type.
+// type PasswordFieldType struct {
+// 	Field
+// }
 
-// Textarea field input type
-type TextAreaFieldType struct {
-	Field
-}
+// // Textarea field input type
+// type TextAreaFieldType struct {
+// 	Field
+// }
 
-// Hidden field input type.
-type HiddenFieldType struct {
-	Field
-}
+// // Hidden field input type.
+// type HiddenFieldType struct {
+// 	Field
+// }
 
 // TextField creates a default text input field based on the provided name.
-func TextField(name string) *TextFieldType {
-	return &TextFieldType{
-		FieldWithType(name, formcommon.TEXT),
-	}
+func TextField(name string) *Field {
+	return FieldWithType(name, formcommon.TEXT)
 }
 
 // PasswordField creates a default password text input field based on the provided name.
-func PasswordField(name string) *PasswordFieldType {
-	return &PasswordFieldType{
-		FieldWithType(name, formcommon.PASSWORD),
-	}
+func PasswordField(name string) *Field {
+	return FieldWithType(name, formcommon.PASSWORD)
 }
 
 // =========== TEXT AREA
 
 // TextAreaField creates a default textarea input field based on the provided name and dimensions.
-func TextAreaField(name string, rows, cols int) *TextAreaFieldType {
-	ret := &TextAreaFieldType{
-		FieldWithType(name, formcommon.TEXTAREA),
-	}
+func TextAreaField(name string, rows, cols int) *Field {
+	ret := FieldWithType(name, formcommon.TEXTAREA)
 	ret.SetParam("rows", string(rows))
 	ret.SetParam("cols", string(cols))
 	return ret
 }
 
-// SetText saves the provided text as content of the field, usually a TextAreaField.
-func (f *TextAreaFieldType) SetText(text string) *TextAreaFieldType {
-	f.additionalData["text"] = text
-	return f
-}
-
 // ========================
 
 // HiddenField creates a default hidden input field based on the provided name.
-func HiddenField(name string) *HiddenFieldType {
-	return &HiddenFieldType{
-		FieldWithType(name, formcommon.HIDDEN),
-	}
+func HiddenField(name string) *Field {
+	return FieldWithType(name, formcommon.HIDDEN)
 }
 
 // TextFieldFromInstance creates and initializes a text field based on its name, the reference object instance and field number.
 // It uses i object's [fieldNo]-th field content to set the field content.
-func TextFieldFromInstance(i interface{}, fieldNo int, name string) *TextFieldType {
+func TextFieldFromInstance(i interface{}, fieldNo int, name string) *Field {
 	ret := TextField(name)
 	ret.SetValue(fmt.Sprintf("%s", reflect.ValueOf(i).Field(fieldNo).String()))
 	return ret
@@ -78,7 +64,7 @@ func TextFieldFromInstance(i interface{}, fieldNo int, name string) *TextFieldTy
 
 // PasswordFieldFromInstance creates and initializes a password field based on its name, the reference object instance and field number.
 // It uses i object's [fieldNo]-th field content to set the field content.
-func PasswordFieldFromInstance(i interface{}, fieldNo int, name string) *PasswordFieldType {
+func PasswordFieldFromInstance(i interface{}, fieldNo int, name string) *Field {
 	ret := PasswordField(name)
 	ret.SetValue(fmt.Sprintf("%s", reflect.ValueOf(i).Field(fieldNo).String()))
 	return ret
@@ -87,7 +73,7 @@ func PasswordFieldFromInstance(i interface{}, fieldNo int, name string) *Passwor
 // TextFieldFromInstance creates and initializes a text field based on its name, the reference object instance and field number.
 // This method looks for "form_rows" and "form_cols" tags to add additional parameters to the field.
 // It also uses i object's [fieldNo]-th field content to set the field content.
-func TextAreaFieldFromInstance(i interface{}, fieldNo int, name string) *TextAreaFieldType {
+func TextAreaFieldFromInstance(i interface{}, fieldNo int, name string) *Field {
 	t := reflect.TypeOf(i).Field(fieldNo).Tag
 	var rows, cols int64 = 30, 50
 	var err error
@@ -110,7 +96,7 @@ func TextAreaFieldFromInstance(i interface{}, fieldNo int, name string) *TextAre
 
 // HiddenFieldFromInstance creates and initializes a hidden field based on its name, the reference object instance and field number.
 // It uses i object's [fieldNo]-th field content to set the field content.
-func HiddenFieldFromInstance(i interface{}, fieldNo int, name string) *HiddenFieldType {
+func HiddenFieldFromInstance(i interface{}, fieldNo int, name string) *Field {
 	ret := HiddenField(name)
 	ret.SetValue(fmt.Sprintf("%s", reflect.ValueOf(i).Field(fieldNo).String()))
 	return ret

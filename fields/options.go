@@ -12,46 +12,36 @@ type InputChoice struct {
 	Id, Val string
 }
 
-// Radio button type.
-type RadioType struct {
-	Field
-}
+// // Radio button type.
+// type RadioType struct {
+// 	Field
+// }
 
-// Select field type.
-type SelectType struct {
-	Field
-}
+// // Select field type.
+// type SelectType struct {
+// 	Field
+// }
 
-// Checkbox field type.
-type CheckBoxType struct {
-	Field
-}
+// // Checkbox field type.
+// type CheckBoxType struct {
+// 	Field
+// }
 
 // =============== RADIO
 
 // RadioField creates a default radio button input field with the provided name and list of choices.
-func RadioField(name string, choices []InputChoice) *RadioType {
-	ret := &RadioType{
-		FieldWithType(name, formcommon.RADIO),
-	}
+func RadioField(name string, choices []InputChoice) *Field {
+	ret := FieldWithType(name, formcommon.RADIO)
 	ret.additionalData["choices"] = []InputChoice{}
-	ret.SetChoices(choices)
+	ret.SetRadioChoices(choices)
 	return ret
-}
-
-// SetChoices takes as input a dictionary whose key-value entries are defined as follows: key is the group name (the empty string
-// is the default group that is not explicitly rendered) and value is the list of choices belonging to that group.
-// Grouping is only useful for Select fields, while groups are ignored in Radio fields.
-func (f *RadioType) SetChoices(choices []InputChoice) *RadioType {
-	f.additionalData["choices"] = choices
-	return f
 }
 
 // RadioFieldFromInstance creates and initializes a radio field based on its name, the reference object instance and field number.
 // This method looks for "form_choices" and "form_value" tags to add additional parameters to the field. "form_choices" tag is a list
 // of <id>|<value> options, joined by "|" character; ex: "A|Option A|B|Option B" translates into 2 options: <A, Option A> and <B, Option B>.
 // It also uses i object's [fieldNo]-th field content (if any) to override the "form_value" option and fill the HTML field.
-func RadioFieldFromInstance(i interface{}, fieldNo int, name string) *RadioType {
+func RadioFieldFromInstance(i interface{}, fieldNo int, name string) *Field {
 	t := reflect.TypeOf(i).Field(fieldNo).Tag
 	choices := strings.Split(t.Get("form_choices"), "|")
 	chArr := make([]InputChoice, 0)
@@ -76,55 +66,12 @@ func RadioFieldFromInstance(i interface{}, fieldNo int, name string) *RadioType 
 
 // SelectField creates a default select input field with the provided name and map of choices. Choices for SelectField are grouped
 // by name (if <optgroup> is needed); "" group is the default one and does not trigger a <optgroup></optgroup> rendering.
-func SelectField(name string, choices map[string][]InputChoice) *SelectType {
-	ret := &SelectType{
-		FieldWithType(name, formcommon.SELECT),
-	}
+func SelectField(name string, choices map[string][]InputChoice) *Field {
+	ret := FieldWithType(name, formcommon.SELECT)
 	ret.additionalData["choices"] = map[string][]InputChoice{}
 	ret.additionalData["multValues"] = map[string]struct{}{}
-	ret.SetChoices(choices)
+	ret.SetSelectChoices(choices)
 	return ret
-}
-
-// MultipleChoice configures the SelectField to accept and display multiple choices.
-func (sf *SelectType) MultipleChoice() *SelectType {
-	sf.AddTag("multiple")
-	// fix name if necessary
-	if !strings.HasSuffix(sf.name, "[]") {
-		sf.name = sf.name + "[]"
-	}
-	return sf
-}
-
-// SingleChoice configures the SelectField to accept and display only one choice.
-func (sf *SelectType) SingleChoice() *SelectType {
-	sf.RemoveTag("multiple")
-	if strings.HasSuffix(sf.name, "[]") {
-		sf.name = strings.TrimSuffix(sf.name, "[]")
-	}
-	return sf
-}
-
-// If the SelectField is configured as "multiple", AddSelected adds a selected value to the field.
-func (sf *SelectType) AddSelected(opt ...string) *SelectType {
-	for _, v := range opt {
-		sf.additionalData["multValues"].(map[string]struct{})[v] = struct{}{}
-	}
-	return sf
-}
-
-// If the SelectField is configured as "multiple", AddSelected removes the selected value from the field.
-func (sf *SelectType) RemoveSelected(opt string) *SelectType {
-	delete(sf.additionalData["multValues"].(map[string]struct{}), opt)
-	return sf
-}
-
-// SetChoices takes as input a dictionary whose key-value entries are defined as follows: key is the group name (the empty string
-// is the default group that is not explicitly rendered) and value is the list of choices belonging to that group.
-// Grouping is only useful for Select fields, while groups are ignored in Radio fields.
-func (sf *SelectType) SetChoices(choices map[string][]InputChoice) *SelectType {
-	sf.additionalData["choices"] = choices
-	return sf
 }
 
 // SelectFieldFromInstance creates and initializes a select field based on its name, the reference object instance and field number.
@@ -132,7 +79,7 @@ func (sf *SelectType) SetChoices(choices map[string][]InputChoice) *SelectType {
 // of <group<|<id>|<value> options, joined by "|" character; ex: "G1|A|Option A|G1|B|Option B" translates into 2 options in the same group G1:
 // <A, Option A> and <B, Option B>. "" group is the default one.
 // It also uses i object's [fieldNo]-th field content (if any) to override the "form_value" option and fill the HTML field.
-func SelectFieldFromInstance(i interface{}, fieldNo int, name string, options map[string]struct{}) *SelectType {
+func SelectFieldFromInstance(i interface{}, fieldNo int, name string, options map[string]struct{}) *Field {
 	t := reflect.TypeOf(i).Field(fieldNo).Tag
 	choices := strings.Split(t.Get("form_choices"), "|")
 	chArr := make(map[string][]InputChoice)
@@ -165,10 +112,8 @@ func SelectFieldFromInstance(i interface{}, fieldNo int, name string, options ma
 
 // Checkbox creates a default checkbox field with the provided name. It also makes it checked by default based
 // on the checked parameter.
-func Checkbox(name string, checked bool) *CheckBoxType {
-	ret := &CheckBoxType{
-		FieldWithType(name, formcommon.CHECKBOX),
-	}
+func Checkbox(name string, checked bool) *Field {
+	ret := FieldWithType(name, formcommon.CHECKBOX)
 	if checked {
 		ret.AddTag("checked")
 	}
@@ -177,10 +122,8 @@ func Checkbox(name string, checked bool) *CheckBoxType {
 
 // CheckboxFromInstance creates and initializes a checkbox field based on its name, the reference object instance, field number and field options.
 // It uses i object's [fieldNo]-th field content (if any) to override the "checked" option in the options map and check the field.
-func CheckboxFromInstance(i interface{}, fieldNo int, name string, options map[string]struct{}) *CheckBoxType {
-	ret := &CheckBoxType{
-		FieldWithType(name, formcommon.CHECKBOX),
-	}
+func CheckboxFromInstance(i interface{}, fieldNo int, name string, options map[string]struct{}) *Field {
+	ret := FieldWithType(name, formcommon.CHECKBOX)
 
 	if _, ok := options["checked"]; ok {
 		ret.AddTag("checked")

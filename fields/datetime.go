@@ -15,52 +15,44 @@ const (
 	TIME_FORMAT     = "15:05"
 )
 
-// DateTime type.
-type DatetimeType struct {
-	Field
-}
+// // DateTime type.
+// type DatetimeType struct {
+// 	Field
+// }
 
-// Date type.
-type DateType struct {
-	Field
-}
+// // Date type.
+// type DateType struct {
+// 	Field
+// }
 
-// Time type.
-type TimeType struct {
-	Field
-}
+// // Time type.
+// type TimeType struct {
+// 	Field
+// }
 
 // DatetimeField creates a default datetime input field with the given name.
-func DatetimeField(name string) *DatetimeType {
-	ret := &DatetimeType{
-		FieldWithType(name, formcommon.DATETIME),
-	}
+func DatetimeField(name string) *Field {
+	ret := FieldWithType(name, formcommon.DATETIME)
 	return ret
 }
 
 // DateField creates a default date input field with the given name.
-func DateField(name string) *DateType {
-	ret := &DateType{
-		FieldWithType(name, formcommon.DATE),
-	}
+func DateField(name string) *Field {
+	ret := FieldWithType(name, formcommon.DATE)
 	return ret
 }
 
 // TimeField creates a default time input field with the given name.
-func TimeField(name string) *TimeType {
-	ret := &TimeType{
-		FieldWithType(name, formcommon.TIME),
-	}
+func TimeField(name string) *Field {
+	ret := FieldWithType(name, formcommon.TIME)
 	return ret
 }
 
 // DatetimeFieldFromInstance creates and initializes a datetime field based on its name, the reference object instance and field number.
 // This method looks for "form_min", "form_max" and "form_value" tags to add additional parameters to the field.
 // It also uses i object's [fieldNo]-th field content (if any) to override the "form_value" option and fill the HTML field.
-func DatetimeFieldFromInstance(i interface{}, fieldNo int, name string) *DatetimeType {
-	ret := &DatetimeType{
-		FieldWithType(name, formcommon.DATETIME),
-	}
+func DatetimeFieldFromInstance(i interface{}, fieldNo int, name string) *Field {
+	ret := DatetimeField(name)
 	// check tags
 	t := reflect.TypeOf(i).Field(fieldNo).Tag
 	if v := t.Get("form_min"); v != "" {
@@ -88,10 +80,8 @@ func DatetimeFieldFromInstance(i interface{}, fieldNo int, name string) *Datetim
 // DateFieldFromInstance creates and initializes a date field based on its name, the reference object instance and field number.
 // This method looks for "form_min", "form_max" and "form_value" tags to add additional parameters to the field.
 // It also uses i object's [fieldNo]-th field content (if any) to override the "form_value" option and fill the HTML field.
-func DateFieldFromInstance(i interface{}, fieldNo int, name string) *DateType {
-	ret := &DateType{
-		FieldWithType(name, formcommon.DATE),
-	}
+func DateFieldFromInstance(i interface{}, fieldNo int, name string) *Field {
+	ret := DateField(name)
 	// check tags
 	t := reflect.TypeOf(i).Field(fieldNo).Tag
 	if v := t.Get("form_min"); v != "" {
@@ -119,10 +109,8 @@ func DateFieldFromInstance(i interface{}, fieldNo int, name string) *DateType {
 // TimeFieldFromInstance creates and initializes a time field based on its name, the reference object instance and field number.
 // This method looks for "form_min", "form_max" and "form_value" tags to add additional parameters to the field.
 // It also uses i object's [fieldNo]-th field content (if any) to override the "form_value" option and fill the HTML field.
-func TimeFieldFromInstance(i interface{}, fieldNo int, name string) *TimeType {
-	ret := &TimeType{
-		FieldWithType(name, formcommon.TIME),
-	}
+func TimeFieldFromInstance(i interface{}, fieldNo int, name string) *Field {
+	ret := TimeField(name)
 	// check tags
 	t := reflect.TypeOf(i).Field(fieldNo).Tag
 	if v := t.Get("form_min"); v != "" {

@@ -2,8 +2,10 @@
 package fields
 
 import (
+	"github.com/kirves/go-form-it/common"
 	"github.com/kirves/go-form-it/widgets"
 	"html/template"
+	"strings"
 )
 
 // Field is a generic type containing all data associated to an input field.
@@ -47,11 +49,17 @@ type FieldInterface interface {
 	Enabled() FieldInterface
 	SetHelptext(text string) FieldInterface
 	AddError(err string) FieldInterface
+	MultipleChoice() FieldInterface
+	SingleChoice() FieldInterface
+	AddSelected(opt ...string) FieldInterface
+	RemoveSelected(opt string) FieldInterface
+	SetSelectChoices(choices map[string][]InputChoice) FieldInterface
+	SetRadioChoices(choices []InputChoice) FieldInterface
 }
 
 // FieldWithType creates an empty field of the given type and identified by name.
-func FieldWithType(name, t string) Field {
-	return Field{
+func FieldWithType(name, t string) *Field {
+	return &Field{
 		fieldType:      t,
 		Widget:         nil,
 		name:           name,
@@ -229,5 +237,83 @@ func (f *Field) SetHelptext(text string) FieldInterface {
 // AddError adds an error string to the field. It's valid only for Bootstrap forms.
 func (f *Field) AddError(err string) FieldInterface {
 	f.errors = append(f.errors, err)
+	return f
+}
+
+// MultipleChoice configures the SelectField to accept and display multiple choices.
+// It has no effect if type is not SELECT.
+func (f *Field) MultipleChoice() FieldInterface {
+	if f.fieldType == formcommon.SELECT {
+		f.AddTag("multiple")
+		// fix name if necessary
+		if !strings.HasSuffix(f.name, "[]") {
+			f.name = f.name + "[]"
+		}
+	}
+	return f
+}
+
+// SingleChoice configures the Field to accept and display only one choice (valid for SelectFields only).
+// It has no effect if type is not SELECT.
+func (f *Field) SingleChoice() FieldInterface {
+	if f.fieldType == formcommon.SELECT {
+		f.RemoveTag("multiple")
+		if strings.HasSuffix(f.name, "[]") {
+			f.name = strings.TrimSuffix(f.name, "[]")
+		}
+	}
+	return f
+}
+
+// If the field is configured as "multiple", AddSelected adds a selected value to the field (valid for SelectFields only).
+// It has no effect if type is not SELECT.
+func (f *Field) AddSelected(opt ...string) FieldInterface {
+	if f.fieldType == formcommon.SELECT {
+		for _, v := range opt {
+			f.additionalData["multValues"].(map[string]struct{})[v] = struct{}{}
+		}
+	}
+	return f
+}
+
+// If the field is configured as "multiple", AddSelected removes the selected value from the field (valid for SelectFields only).
+// It has no effect if type is not SELECT.
+func (f *Field) RemoveSelected(opt string) FieldInterface {
+	if f.fieldType == formcommon.SELECT {
+		if _, ok := f.additionalData["multValues"]; ok {
+			delete(f.additionalData["multValues"].(map[string]struct{}), opt)
+		}
+	}
+	return f
+}
+
+// SetSelectChoices takes as input a dictionary whose key-value entries are defined as follows: key is the group name (the empty string
+// is the default group that is not explicitly rendered) and value is the list of choices belonging to that group.
+// Grouping is only useful for Select fields, while groups are ignored in Radio fields.
+// It has no effect if type is not SELECT.
+func (f *Field) SetSelectChoices(choices map[string][]InputChoice) FieldInterface {
+	if f.fieldType == formcommon.SELECT {
+		f.additionalData["choices"] = choices
+	}
+	return f
+}
+
+// SetRadioChoices sets an array of InputChoice objects as the possible choices for a radio field. It has no effect if type is not RADIO.
+func (f *Field) SetRadioChoices(choices []InputChoice) FieldInterface {
+	if f.fieldType == formcommon.RADIO {
+		f.additionalData["choices"] = choices
+	}
+	return f
+}
+
+// SetText saves the provided text as content of the field, usually a TextAreaField.
+func (f *Field) SetText(text string) FieldInterface {
+	if f.fieldType == formcommon.BUTTON ||
+		f.fieldType == formcommon.SUBMIT ||
+		f.fieldType == formcommon.RESET ||
+		f.fieldType == formcommon.STATIC ||
+		f.fieldType == formcommon.TEXTAREA {
+		f.additionalData["text"] = text
+	}
 	return f
 }
