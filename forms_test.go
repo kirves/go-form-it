@@ -58,7 +58,7 @@ func TestSelectRender(t *testing.T) {
 			fields.InputChoice{"choice1", "value1"},
 			fields.InputChoice{"choice2", "value2"},
 		},
-	}).MultipleChoice().AddSelected("choice1", "choice2").SetLabel("asd")
+	}).MultipleChoice().SetLabel("asd").AddSelected("choice1", "choice2")
 	field.SetStyle(style).SetValue("choice1")
 	t.Log("Rendered select:", field.Render())
 }
@@ -154,6 +154,6 @@ func TestPizzaCreation(t *testing.T) {
 		Ingrs []Ingredient `db_transient:"true" form_options:"skip"`
 	}
 
-	form := BootstrapFormFromModel(Pizza{}, POST, "")
+	form := BootstrapFormFromModel(Pizza{Price: 2.2}, POST, "")
 	t.Log("Rendered form:", form.Render())
 }
