@@ -48,7 +48,7 @@ func NumberFieldFromInstance(i interface{}, fieldNo int, name string) *Field {
 	if v := t.Get("form_value"); v != "" {
 		ret.SetValue(v)
 	} else {
-		ret.SetValue(fmt.Sprintf("%d", reflect.ValueOf(i).Field(fieldNo).Interface()))
+		ret.SetValue(fmt.Sprintf("%v", reflect.ValueOf(i).Field(fieldNo).Interface()))
 	}
 	return ret
 }
@@ -72,7 +72,7 @@ func RangeFieldFromInstance(i interface{}, fieldNo int, name string) *Field {
 	if v := t.Get("form_value"); v != "" {
 		ret.SetValue(v)
 	} else {
-		ret.SetValue(fmt.Sprintf("%d", reflect.ValueOf(i).Field(fieldNo).Interface()))
+		ret.SetValue(fmt.Sprintf("%v", reflect.ValueOf(i).Field(fieldNo).Interface()))
 	}
 	return ret
 }

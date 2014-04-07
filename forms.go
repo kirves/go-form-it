@@ -150,6 +150,8 @@ func unWindStructure(m interface{}, baseName string) []fields.FieldInterface {
 					f = fields.DatetimeFieldFromInstance(m, i, fName)
 				case "int":
 					f = fields.NumberFieldFromInstance(m, i, fName)
+				case "float":
+					f = fields.NumberFieldFromInstance(m, i, fName)
 				case "struct":
 					fieldList = append(fieldList, unWindStructure(v.Field(i).Interface(), fName)...)
 					f = nil
