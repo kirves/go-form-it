@@ -89,11 +89,15 @@ func (f *Field) Name() string {
 }
 
 func (f *Field) dataForRender() map[string]interface{} {
+	safeParams := make(map[template.HTMLAttr]string)
+	for k, v := range f.params {
+		safeParams[template.HTMLAttr(k)] = v
+	}
 	data := map[string]interface{}{
 		"classes":      f.class,
 		"id":           f.id,
 		"name":         f.name,
-		"params":       f.params,
+		"params":       safeParams,
 		"css":          f.css,
 		"type":         f.fieldType,
 		"label":        f.label,
