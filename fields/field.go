@@ -85,7 +85,7 @@ func (f *Field) SetStyle(style string) FieldInterface {
 
 // Name returns the name of the field.
 func (f *Field) Name() string {
-	return f.name
+	return strings.TrimSuffix(f.name, "[]")
 }
 
 func (f *Field) dataForRender() map[string]interface{} {
