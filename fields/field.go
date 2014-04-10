@@ -55,6 +55,7 @@ type FieldInterface interface {
 	RemoveSelected(opt string) FieldInterface
 	SetSelectChoices(choices map[string][]InputChoice) FieldInterface
 	SetRadioChoices(choices []InputChoice) FieldInterface
+	SetText(text string) FieldInterface
 }
 
 // FieldWithType creates an empty field of the given type and identified by name.
