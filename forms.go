@@ -20,16 +20,17 @@ const (
 
 // Form structure.
 type Form struct {
-	fields   []FormElement
-	fieldMap map[string]int
-	style    string
-	template *template.Template
-	class    []string
-	id       string
-	params   map[string]string
-	css      map[string]string
-	method   string
-	action   template.HTML
+	fields       []FormElement
+	fieldMap     map[string]int
+	containerMap map[string]string
+	style        string
+	template     *template.Template
+	class        []string
+	id           string
+	params       map[string]string
+	css          map[string]string
+	method       string
+	action       template.HTML
 }
 
 // BaseForm creates an empty form with no styling.
@@ -41,6 +42,7 @@ func BaseForm(method, action string) *Form {
 	return &Form{
 		make([]FormElement, 0),
 		make(map[string]int),
+		make(map[string]string),
 		formcommon.BASE,
 		tmpl,
 		[]string{},
@@ -61,6 +63,7 @@ func BootstrapForm(method, action string) *Form {
 	return &Form{
 		make([]FormElement, 0),
 		make(map[string]int),
+		make(map[string]string),
 		formcommon.BOOTSTRAP,
 		tmpl,
 		[]string{},

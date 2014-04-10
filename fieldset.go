@@ -10,10 +10,11 @@ import (
 
 // FieldSetType is a collection of fields grouped within a form.
 type FieldSetType struct {
-	name   string
-	class  map[string]struct{}
-	tags   map[string]struct{}
-	fields []fields.FieldInterface
+	name     string
+	class    map[string]struct{}
+	tags     map[string]struct{}
+	fields   []fields.FieldInterface
+	fieldMap map[string]int
 }
 
 // Render translates a FieldSetType into HTML code and returns it as a template.HTML object.
@@ -36,12 +37,26 @@ func (f *FieldSetType) Render() template.HTML {
 // FieldSet creates and returns a new FieldSetType with the given name and list of fields.
 // Every method for FieldSetType objects returns the object itself, so that call can be chained.
 func FieldSet(name string, elems ...fields.FieldInterface) *FieldSetType {
-	return &FieldSetType{
+	ret := &FieldSetType{
 		name,
 		map[string]struct{}{},
 		map[string]struct{}{},
 		elems,
+		map[string]int{},
 	}
+	for i, elem := range elems {
+		ret.fieldMap[elem.Name()] = i
+	}
+	return ret
+}
+
+// Field returns the field identified by name. It returns an empty field if it is missing.
+func (f *FieldSetType) Field(name string) fields.FieldInterface {
+	ind, ok := f.fieldMap[name]
+	if !ok {
+		return &fields.Field{}
+	}
+	return f.fields[ind].(fields.FieldInterface)
 }
 
 // Name returns the name of the fieldset.

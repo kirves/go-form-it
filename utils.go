@@ -57,6 +57,7 @@ func (f *Form) addField(field fields.FieldInterface) *Form {
 func (f *Form) addFieldSet(fs *FieldSetType) *Form {
 	for _, v := range fs.fields {
 		v.SetStyle(f.style)
+		f.containerMap[v.Name()] = fs.name
 	}
 	f.fields = append(f.fields, fs)
 	f.fieldMap[fs.Name()] = len(f.fields) - 1
@@ -130,7 +131,19 @@ func (f *Form) RemoveCss(key string) *Form {
 func (f *Form) Field(name string) fields.FieldInterface {
 	ind, ok := f.fieldMap[name]
 	if !ok || !reflect.TypeOf(f.fields[ind]).Implements(reflect.TypeOf((*fields.FieldInterface)(nil)).Elem()) {
+		if v, ok2 := f.containerMap[name]; ok2 {
+			return f.FieldSet(v).Field(name)
+		}
 		return &fields.Field{}
 	}
 	return f.fields[ind].(fields.FieldInterface)
+}
+
+// Field returns the field identified by name. It returns an empty field if it is missing.
+func (f *Form) FieldSet(name string) *FieldSetType {
+	ind, ok := f.fieldMap[name]
+	if !ok || reflect.ValueOf(f.fields[ind]).Type().String() != "*forms.FieldSetType" {
+		return &FieldSetType{}
+	}
+	return f.fields[ind].(*FieldSetType)
 }
