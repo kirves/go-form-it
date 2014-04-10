@@ -3,6 +3,7 @@ package forms
 import (
 	"bytes"
 	"fmt"
+	"github.com/kirves/go-form-it/common"
 	"github.com/kirves/go-form-it/fields"
 	"html/template"
 )
@@ -24,7 +25,7 @@ func (f *FieldSetType) Render() template.HTML {
 		"classes": f.class,
 		"tags":    f.tags,
 	}
-	err := template.Must(template.ParseFiles("templates/fieldset.html")).Execute(buf, data)
+	err := template.Must(template.ParseFiles(formcommon.CreateUrl("templates/fieldset.html"))).Execute(buf, data)
 	fmt.Println("NUMBER OF FIELDS:", f.fields)
 	if err != nil {
 		panic(err)
