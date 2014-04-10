@@ -27,7 +27,6 @@ func (f *FieldSetType) Render() template.HTML {
 		"tags":    f.tags,
 	}
 	err := template.Must(template.ParseFiles(formcommon.CreateUrl("templates/fieldset.html"))).Execute(buf, data)
-	fmt.Println("NUMBER OF FIELDS:", f.fields)
 	if err != nil {
 		panic(err)
 	}
