@@ -2,7 +2,6 @@ package forms
 
 import (
 	"bytes"
-	"fmt"
 	"github.com/kirves/go-form-it/common"
 	"github.com/kirves/go-form-it/fields"
 	"html/template"
