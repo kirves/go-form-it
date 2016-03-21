@@ -4,6 +4,7 @@ package formcommon
 import (
 	"os"
 	"path"
+	"strings"
 )
 
 const (
@@ -49,7 +50,23 @@ const (
 // CreateUrl creates the complete url of the desired widget template
 func CreateUrl(widget string) string {
 	if _, err := os.Stat(widget); os.IsNotExist(err) {
-		return path.Join(os.Getenv("GOPATH"), "src", PACKAGE_NAME, widget)
+		goPath := os.Getenv("GOPATH")
+		// In some cases ( using godep ) , GOPATH is something like this /path/to/godep/workspace:/original/go/path
+		if strings.Contains(goPath, ":") {
+			paths := strings.Split(goPath, ":")
+			widgetPath := ""
+			for _, p := range paths {
+				widgetPath = path.Join(p, "src", PACKAGE_NAME, widget)
+				if _, err := os.Stat(widgetPath); os.IsNotExist(err) {
+					continue
+				}
+				break
+			}
+			return widgetPath
+		} else {
+			return path.Join(goPath, "src", PACKAGE_NAME, widget)
+		}
+
 	}
 	return widget
 }
