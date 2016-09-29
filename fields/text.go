@@ -42,8 +42,8 @@ func PasswordField(name string) *Field {
 // TextAreaField creates a default textarea input field based on the provided name and dimensions.
 func TextAreaField(name string, rows, cols int) *Field {
 	ret := FieldWithType(name, formcommon.TEXTAREA)
-	ret.SetParam("rows", string(rows))
-	ret.SetParam("cols", string(cols))
+	ret.SetParam("rows", strconv.Itoa(rows))
+	ret.SetParam("cols", strconv.Itoa(cols))
 	return ret
 }
 
